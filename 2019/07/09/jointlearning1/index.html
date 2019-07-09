@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      just for a test | Welcome to Xu Huang&#39;s Blog
+      Joint entity and relation extraction based on a hybrid neural network | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《just for a test》
+			当前文章&nbsp;:&nbsp;《Joint entity and relation extraction based on a hybrid neural network》
 		
 	</p>
 
@@ -266,6 +266,18 @@
 		插件作者：KELEN
 		插件来源: https://github.com/KELEN/katelog
 -->
+
+	
+		<div class="layout-toc">
+			<div id="layout-toc">
+				<div class="k-catelog-list" id="catelog-list" data-title="文章目录"></div>
+			</div>
+		</div>
+
+		
+		<script src="/plugin/toc/katelog.min.js"></script>
+
+		
 	 
 
 <div class="layout-post">
@@ -273,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/07/template/" itemprop="url">
-		just for a test
+	<a href="/2019/07/09/jointlearning1/" itemprop="url">
+		Joint entity and relation extraction based on a hybrid neural network
 	</a>
 
 	</div>
@@ -287,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/07/template/" itemprop="url">
-		<time datetime="2019-07-07T05:09:32.189Z" itemprop="datePublished">
-	  		2019-07-07
+	<a href="/2019/07/09/jointlearning1/" itemprop="url">
+		<time datetime="2019-07-09T08:19:22.652Z" itemprop="datePublished">
+	  		2019-07-09
 	  </time>
 	</a>
 	&nbsp;
@@ -305,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/07/template/" itemprop="url">
-		<time datetime="2019-07-07T05:09:32.189Z" itemprop="dateUpdated">
-	  		2019-07-07
+	<a href="/2019/07/09/jointlearning1/" itemprop="url">
+		<time datetime="2019-07-09T08:19:22.652Z" itemprop="dateUpdated">
+	  		2019-07-09
 	  </time>
 	</a> 
 
@@ -318,8 +330,12 @@
 			<i class="fa fa-tags"></i>
 			
 	
-		<a href="/tags/other/" class=" ">
-			other
+		<a href="/tags/nlp/" class=" ">
+			nlp
+		</a>
+	
+		<a href="/tags/joint-learing/" class=" ">
+			joint learing
 		</a>
 	
 		
@@ -332,7 +348,10 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<p>仅仅只是一个测试！</p>
+		<h1 id="“Joint-entity-and-relation-extraction-based-on-a-hybrid-neural-network-”"><a href="#“Joint-entity-and-relation-extraction-based-on-a-hybrid-neural-network-”" class="headerlink" title="“Joint entity and relation extraction based on a hybrid neural network ”"></a>“Joint entity and relation extraction based on a hybrid neural network ”</h1><p>————-本文发表于2017年的NeuroComputing期刊上。<br>利用神经网络的方法实现命名实体识别（NER）和关系抽取（RE）的联合学习。<br>整个模型的框架和思想相对简单，框架如下图所示：<br><img src="/.com//jointlearning1-1.png" alt="Framework"><br>该框架首先使用一个BiLSTM对输入（句子）进行编码，然后将该编码结果分别送给NER模块和RC模块，这里的联合学习主要体现在底层的BiLSTM编码上，即两个模块共享了这个编码。（接下来，将不再对BiLSTM模块赘述，只介绍NER模块和RC模块）</p>
+<h2 id="NER模块："><a href="#NER模块：" class="headerlink" title="NER模块："></a>NER模块：</h2><p>关于NER，最简单的方式可以直接在BiLSTM编码后接一个全连接层进行tag（标签）分类，但是考虑到tag之间的联系（将另写一篇博客关于NER的，将在那里详述这个联系），同时考虑encode-decode的框架，这里再使用一个LSTM进行decode。<br>这个decode也是一个典型的LSTM，不过他的输入（t时刻）是h<del>t</del>（编码模块的输出），cell是s<del>t</del>，输出是T<del>t</del>，然后是一个全连接层和softmax层来分类。</p>
+<h2 id="RC模块："><a href="#RC模块：" class="headerlink" title="RC模块："></a>RC模块：</h2><p>RC模块使用的是CNN分类器，考虑到实体词之间的序列对于分类最有用，所以对于实体e<del>1</del>和e<del>2</del>，CNN的输入是h<del>e1</del>,w<del>e1</del>,w<del>e1+1</del>,…w<del>e2</del>,h<del>e2</del>。其中h<del>e</del>来自BiLSTM，是实体的编码信息，w<del>e</del>是词嵌入。CNN的结构如下图所示（将在另一篇关于实体关系抽取的博客中详述该方法）：<br><img src="/.com//jointlearning1-2.png" alt="Framework"></p>
+<h2 id="实验："><a href="#实验：" class="headerlink" title="实验："></a>实验：</h2><p>作者使用的ACE05数据集，分别定义了NER任务和RC任务上的损失函数。首先训练NER模块识别实体并获取实体的编码信息，然后训练RC模块根据编码信息和实体组合对关系进行分类。</p>
 	
 	</div>
 	
@@ -351,12 +370,8 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/07/09/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network" rel="prev">
-				&laquo;上一篇
-			</a>
 		
-		
-			<a href="/2019/07/05/hello-world/" title="Hello World" rel="next">
+			<a href="/2019/07/07/template/" title="just for a test" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -377,22 +392,23 @@
 			
 					<li>
 						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/07/09/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">
-								Joint entity and relation extraction based on a hybrid neural network			
+							<a class="relate-post-title" href="/2019/07/07/template/" title="just for a test">
+								just for a test			
 							</a>
 							<p class="relate-post-date">
 								<i class="fa fa-calendar"></i>
-								七月 9日, 2019				
+								七月 7日, 2019				
 							</p>
 							<p class="relate-post-content">
-								“Joint entity and relation extraction based on a hybrid neural network ”————-本文发表于2017年的NeuroComputing期刊上。利用神经网络的方法实现...
+								仅仅只是一个测试！
+
 							</p>
 						</div>
 
 						<div class="relate-post-cover">
-							<a href="/2019/07/09/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">				
+							<a href="/2019/07/07/template/" title="just for a test">				
 								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Joint entity and relation extraction based on a hybrid neural network"/>
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="just for a test"/>
 							</a>
 						</div>
 					</li>											
