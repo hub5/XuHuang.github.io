@@ -352,10 +352,10 @@
 <p>为了解决目前机器学习（尤其是深度学习）的数据依赖性、实验一致性和过程透明性问题，我们需要联合自顶向下（利用symbolic模型的事实，例如语义网络）的方法和自底向上（利用sub-symbolic方法从数据中推断语法模式）的方法。</p>
 <p>SenticNet5为现实世界的物体、动作、事件和人编码了富有表现力和内涵的信息。它不再盲目地使用关键词和单词的共现，而是依赖于与常识性概念相关联的隐含意义。</p>
 <h2 id="概念原语的重要性"><a href="#概念原语的重要性" class="headerlink" title="概念原语的重要性"></a>概念原语的重要性</h2><p>针对概念级别的情感分析和概念袋（bag-of-concepts）模型，由于自然语言的丰富性和模糊性，传统的语义解析方法和n-gram模型容易产生误差。一个有效的方法是通过泛化语义相关的概念来实现一个自顶向下的方法，比如对于munch_toast和slurp_noodles可以映射到概念原语EAT_FOOD。这种概括背后的思想是，有一组有限的mental primitives来表达受影响的概念，有一组有限的mental combination原则来控制它们之间的相互作用。</p>
-<h2 id="发现原语"><a href="#发现原语" class="headerlink" title="发现原语"></a>发现原语</h2><p>对于句子S=[w<del>1</del>,w<del>2</del>,…w<del>n</del>]，句子被分为3部分：left context:[w<del>1</del>,…w<del>i-1</del>]，right context:[w<del>i+1</del>,…w<del>n</del>]，target word:[w<del>i</del>]。我们的目的是通过上下文（left context和right context）和target word来找到target word的原语替代。<br>该部分的框架如下图所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-1.jpg" alt="Framework"></p>
-<h3 id="Target-Word-Representation"><a href="#Target-Word-Representation" class="headerlink" title="Target Word Representation"></a>Target Word Representation</h3><p>对于target word，它的embedding是d<del>m</del>维的向量C，通过如下公式我们得到它的表达c(两层带tanh的全连接)：<br>    C<del>1</del>=tanh(W<del>a</del>C+b<del>a</del>)<br>    c=tanh(W<del>b</del>C<del>1</del>+b<del>b</del>)</p>
-<h3 id="Sentential-Context-Representation"><a href="#Sentential-Context-Representation" class="headerlink" title="Sentential Context Representation"></a>Sentential Context Representation</h3><p>对left context和right context 分别采用带注意力机制的BiLSTM（这里的注意力机制是LSTM最原始的注意力机制，不做赘述）得到它们的表达E<del>LC</del>和E<del>RC</del>。为了融合这两部分表达，本文使用一个神经张量网络（neural tensor network）T，T是一个2d x 2d x k维的张量，它在k维空间上执行双线性融合。公式如下：<br>    v=tanh(E’<del>LC</del> T^[1:k]^ E<del>RC</del>+W[E<del>LC</del>,E<del>RC</del>]+b)</p>
-<p>对该公式做个简单的说明：首先是E’<del>LC</del> T^[1:k]^ E<del>RC</del>，它是对每个i,1&lt;=i&lt;=k，做E’<del>LC</del> T^i^ E<del>RC</del>得到一个标量，然后k个拼接成一个k维向量。W是一个kx4d的张量（E<del>LC</del>是2d维的），注意E<del>LC</del>和E<del>RC</del>两个都是列向量而且是竖着拼接的（由于排版和语法问题，我这里的写法有点小问题，实际上[]内应该竖着写，特做说明），b是一个k维向量。这个v就是最后的上下文表达。</p>
+<h2 id="发现原语"><a href="#发现原语" class="headerlink" title="发现原语"></a>发现原语</h2><p>对于句子S=[w<sub>1</sub>,w<sub>2</sub>,…w<sub>n</sub>]，句子被分为3部分：left context:[w<sub>1</sub>,…w<sub>i-1</sub>]，right context:[w<sub>i+1</sub>,…w<sub>n</sub>]，target word:[w<sub>i</sub>]。我们的目的是通过上下文（left context和right context）和target word来找到target word的原语替代。<br>该部分的框架如下图所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-1.jpg" alt="Framework"></p>
+<h3 id="Target-Word-Representation"><a href="#Target-Word-Representation" class="headerlink" title="Target Word Representation"></a>Target Word Representation</h3><p>对于target word，它的embedding是d<sub>m</sub>维的向量C，通过如下公式我们得到它的表达c(两层带tanh的全连接)：<br>    C<sub>1</sub>=tanh(W<sub>a</sub>C+b<sub>a</sub>)<br>    c=tanh(W<sub>b</sub>C<sub>1</sub>+b<sub>b</sub>)</p>
+<h3 id="Sentential-Context-Representation"><a href="#Sentential-Context-Representation" class="headerlink" title="Sentential Context Representation"></a>Sentential Context Representation</h3><p>对left context和right context 分别采用带注意力机制的BiLSTM（这里的注意力机制是LSTM最原始的注意力机制，不做赘述）得到它们的表达E<sub>LC</sub>和E<sub>RC</sub>。为了融合这两部分表达，本文使用一个神经张量网络（neural tensor network）T，T是一个2d x 2d x k维的张量，它在k维空间上执行双线性融合。公式如下：<br>    v=tanh(E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>+W[E<sub>LC</sub>,E<sub>RC</sub>]+b)</p>
+<p>对该公式做个简单的说明：首先是E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>，它是对每个i,1&lt;=i&lt;=k，做E’<sub>LC</sub> T<sup>i</sup> E<sub>RC</sub>得到一个标量，然后k个拼接成一个k维向量。W是一个kx4d的张量（E<sub>LC</sub>是2d维的），注意E<sub>LC</sub>和E<sub>RC</sub>两个都是列向量而且是竖着拼接的（由于排版和语法问题，我这里的写法有点小问题，实际上[]内应该竖着写，特做说明），b是一个k维向量。这个v就是最后的上下文表达。</p>
 <h3 id="负采样"><a href="#负采样" class="headerlink" title="负采样"></a>负采样</h3><p>对于每个正确的上下文和目标词表达对，我们根据unigram distribution随机挑选z个负样本，目标函数定义如下：<br>    obj=$\displaystyle \sum_{c,v}{(\log(\sigma(c.v)+\sum^{z}_{i=1}log(\sigma(-c_i.v)))}$</p>
 <h3 id="相似性指数"><a href="#相似性指数" class="headerlink" title="相似性指数"></a>相似性指数</h3><p>对于上下文信息v和目标词c，替代词b的相似性指数为：dist(b,(c,v))=cos(b,c).cos(b,v)<br>具体来说，首先，我们提取了ConceptNet5中出现的verb-noun和adjective-noun形式的所有概念。还提取了每个概念的一个示例句子。然后，我们从concept(动词/形容词或名词)中提取一个单词作为目标单词，其余的句子作为上下文。现在的目标是找到在给定上下文中具有相同词性的目标词的替代。</p>
 <h3 id="将原语链接到概念和实体"><a href="#将原语链接到概念和实体" class="headerlink" title="将原语链接到概念和实体"></a>将原语链接到概念和实体</h3><p>上述的神经网络框架可以发现概念聚类（concept clusters，这块我的理解是具有相同替代词的target word是一类，然后该类的标签是在文本集中出现次数最多的词。但从实现上来说，有一些问题，我暂时还没想明白，先在这留个坑），由于相似性指数，每个概念只属于一个类。这个聚类操作可以将知识图谱从概念层升级到原语层。<br>SenticNet5是一个三层结构的语义网，自底向上是实体层、概念层、原语层。原语层是基本的状态和动作，概念层是通过语义关系连接常识概念的地方，实体层是命名实体集合，它们通过IsA关系连接到常识概念。<br>下图是原语INTACT的语义网络：</p>
@@ -450,6 +450,29 @@
 					</li>											
 			
 			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/12/hexo-markdown/" title="hexo-markdowns使用笔记">
+								hexo-markdowns使用笔记			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 12日, 2019				
+							</p>
+							<p class="relate-post-content">
+								1.hexo的上下标问题：markdown表示下标可以在下标开始和结束处使用‘~’，但是不知道为啥在Typora好用，但在github网页端不好用。亲测一种非常好用的方法，类似于HTML的标签，即在下标开始和结束时使用标签（结束的地方...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/12/hexo-markdown/" title="hexo-markdowns使用笔记">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="hexo-markdowns使用笔记"/>
+							</a>
+						</div>
+					</li>											
+			
+			
 		</ul>
 	
 </div>	
@@ -522,17 +545,6 @@
 
 
 <!-- show math formula -->
-
-	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-	<script type="text/x-mathjax-config">
-		MathJax.Hub.Config(
-			{ 
-				tex2jax: {
-					inlineMath: [['$','$'], ['\\(','\\)']]
-				} 
-			}
-		);
-	</script>
 
 
 
