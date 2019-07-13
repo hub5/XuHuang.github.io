@@ -319,7 +319,7 @@
 
 	<a href="/2019/07/12/sentiment2/" itemprop="url">
 		<time datetime="2019-07-12T02:21:29.003Z" itemprop="dateUpdated">
-	  		2019-07-12
+	  		2019-07-13
 	  </time>
 	</a> 
 
@@ -348,11 +348,11 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’"><a href="#‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’" class="headerlink" title="‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’"></a>‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’</h1><p>—-本文发表于2018年AAAI会议<br>本文提出了一种通过使用常识性知识的新方法来解决targeted aspect-based情感分析问题（ABSA），该问题包含aspect-based情感分析（分析对于不同aspect的情感）和targeted情感分析（给定target，分析情感）。本文提出了一种分层注意力机制的LSTM结构（target-level和sentence-level），同时将情感相关概念的常识性知识引入到深度神经网络的端到端训练中进行情感分类。</p>
+		<h1 id="‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’"><a href="#‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’" class="headerlink" title="‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’"></a>‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’</h1><p>—-本文发表于2018年AAAI会议<br>本文提出了一种通过使用常识性知识的新方法来解决targeted aspect-based情感分析问题，该问题包含aspect-based情感分析（分析对于不同aspect的情感）和targeted情感分析（给定target，分析情感）。本文提出了一种分层注意力机制的LSTM结构（target-level和sentence-level），同时将情感相关概念的常识性知识引入到深度神经网络的端到端训练中进行情感分类。</p>
 <p>虽然现有的方法对于上述两个方面的情感分析已经有了不错的结果，然而仍然面临以下三个问题：</p>
 <ul>
 <li>首先，对于给定的target，它可能有多个instance（实例，这里的意思是target多次出现）或者是一个multiple words，现有的做法认为所有instance同样重要，并简单的计算其平均值作为结果，这种简化往往会造成冲突。</li>
-<li>其次，现有方法所利用的分层注意力只将与给定目标和aspect相关的情感词的推理过程隐式地建模为黑箱。</li>
+<li>其次，现有方法所利用的分层注意力只将与给定目标和aspect相关的情感词的推理隐式地建模为黑箱过程。</li>
 <li>最后，现有的研究缺乏对深层神经网络外部知识的有效整合，如情感或常识知识，这些知识可以直接帮助识别aspect和情感极性。此外，如果没有任何约束，全局注意力模型可能倾向于编码与任务无关的信息。</li>
 </ul>
 <p>本文的贡献主要体现在以下三点：</p>
@@ -361,13 +361,30 @@
 <li>我们扩展了经典的LSTM单元，其中包含了与外部知识集成的组件</li>
 <li>我们将情感常识性知识整合到一个深度神经网络中。</li>
 </ul>
-<h2 id="Related-work"><a href="#Related-work" class="headerlink" title="Related work"></a>Related work</h2><p>我们简单的介绍一下情感分析的几个子问题：:ABSA，targeted sentiment analysis。以及在深度神经模型中加入外部知识。</p>
+<h2 id="Related-work"><a href="#Related-work" class="headerlink" title="Related work"></a>Related work</h2><p>我们简单的介绍一下情感分析的几个子问题：ABSA，targeted sentiment analysis。以及在深度神经模型中加入外部知识。</p>
 <h3 id="Aspect-Based-Sentiment-Analysis（ABAS）"><a href="#Aspect-Based-Sentiment-Analysis（ABAS）" class="headerlink" title="Aspect-Based Sentiment Analysis（ABAS）"></a>Aspect-Based Sentiment Analysis（ABAS）</h3><p>ABAS就是要分析每个aspect的情感极性，该问题最大的挑战是如何在整个句子中表达指定aspect的情感信息。该部分的研究也是从最初的基于特征工程的方法到基于神经网络的方法，再到引入注意力机制（对于句子中的每个单词，注意力向量量化其情感显著性以及与给定aspect的相关性）。</p>
 <h3 id="Targeted-Sentiment-Analysis"><a href="#Targeted-Sentiment-Analysis" class="headerlink" title="Targeted Sentiment Analysis"></a>Targeted Sentiment Analysis</h3><p>该任务是要分析句子中给定目标实体的情感。因此针对性的情感分析方法是至关重要的，比如，目标依赖LSTM (TDLSTM)和目标连接LSTM(YCLSTM)对情感目标与整个句子之间的交互作用进行建模。</p>
 <h3 id="Incorporating-External-Knowledge"><a href="#Incorporating-External-Knowledge" class="headerlink" title="Incorporating External Knowledge"></a>Incorporating External Knowledge</h3><p>本文提出的模型，Sentic LSTM，受Xu等的启发（add a knowledge recall gate to the cell state of LSTM），不同之处在于，我们使用外部知识来生成hidden output并控制信息流。</p>
-<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="Task-Definition"><a href="#Task-Definition" class="headerlink" title="Task Definition"></a>Task Definition</h3><p>Targeted ABSA的任务定义如下：<br>对于句子s，我们将所有提到的同一个target视为一个单一的target。对于由m个单词组成的target t，定义T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}，其中t<sub>i</sub>指t的第i个单词。Targeted ABSA的任务可以划分为两个子任务：首先，对于一个预定义的集合，找到t的aspect categories；其次，对于t找到它相对于每个aspect的情感。我们举一个例子来说明情况：<br>“I live in [West London] for years. I like it and it is safe to live in much of [west London]. Except [Brent] maybe. ”<br>该句子中包含两个target，WestLondon和Brent。我们的目标是检测aspect和对应的情感极性。在该例子中，对[WestLondon]，输出是[‘general’:positive;’safety’:positive]；对[Brent]的输出是[‘general’:negative;’safety’:negative]。这里的aspect指的是general和safety。</p>
-<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>本文的神经网络架构分为两部分：序列编码器和分层注意力。结构示意图如下所示：<br>对于给定的句子，首先用一个BiLSTM进行编码；目标级注意力（target-level attention）将目标表达式位置上的hidden outputs作为输入(用棕色高亮显示)，并在这些单词上计算一个自注意向量v<sub>t</sub>；然后，使用target representation（即v<sub>t</sub>）和aspect嵌入来计算句子级注意力（sentence-level attention）；句子级注意力组件为每个aspect和target对返回一个句子向量；最后这个句子向量将被送到一个分类器中给出情感极性。</p>
-<h3 id="Target-level-attention"><a href="#Target-level-attention" class="headerlink" title="Target-level attention"></a>Target-level attention</h3><p>这里我们先对上文提到的T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}做进一步的说明，即t<sub>i</sub>可以是连续的也可以是非连续的，例如对于上文的例子中的target [West London]的T为T={3,4,20,21}。记T对应的hidden outputs为H’={h<sub>t1</sub>,h<sub>t2</sub>,…h<sub>tm</sub>}，则target t的向量表达v<sub>t</sub>为：<br>v<sub>t</sub>=H’$\alpha$=</p>
+<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="Task-Definition"><a href="#Task-Definition" class="headerlink" title="Task Definition"></a>Task Definition</h3><p>Targeted ABSA的任务定义如下：<br>对于句子s，我们将所有提到的同一个target视为一个target。对于由m个单词组成的target t，定义T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}，其中t<sub>i</sub>指t的第i个单词。Targeted ABSA的任务可以划分为两个子任务：首先，对于一个预定义的集合，找到t的aspect categories；其次，对于t找到它相对于每个aspect的情感。我们举一个例子来说明情况：<br>“I live in [West London] for years. I like it and it is safe to live in much of [west London]. Except [Brent] maybe. ”<br>该句子中包含两个target，WestLondon和Brent。我们的目标是检测aspect和对应的情感极性。在该例子中，对[WestLondon]，输出是[‘general’:positive;’safety’:positive]；对[Brent]的输出是[‘general’:negative;’safety’:negative]。这里的aspect指的是general和safety。</p>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>本文的神经网络架构分为两部分：序列编码器和分层注意力。结构示意图如下所示：</p>
+<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-1.jpg" alt="Framework"></p>
+<p>对于给定的句子，首先用一个BiLSTM进行编码；目标级注意力（target-level attention）将目标表达式位置上的hidden outputs作为输入(用棕色高亮显示)，并在这些单词上计算一个自注意向量v<sub>t</sub>；然后，使用target representation（即v<sub>t</sub>）和aspect嵌入来计算句子级注意力（sentence-level attention）；句子级注意力组件为每个aspect和target对返回一个句子向量；最后这个句子向量将被送到一个分类器中给出情感极性。</p>
+<h3 id="Target-level-attention"><a href="#Target-level-attention" class="headerlink" title="Target-level attention"></a>Target-level attention</h3><p>这里我们先对上文提到的T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}做进一步的说明，即t<sub>i</sub>可以是连续的也可以是非连续的，例如对于上文的例子中的target [West London]的T为T={3,4,20,21}。记T对应的hidden outputs为H’={h<sub>t1</sub>,h<sub>t2</sub>,…h<sub>tm</sub>}，则target t的向量表达v<sub>t</sub>为：<br>v<sub>t</sub>=H’$\alpha$=$\sum_{j}{\alpha_jh_{tj}}$</p>
+<p>其中$\alpha$是target注意力向量，计算公式如下：</p>
+<p>$\alpha$=softmax(W<sup>(2)</sup><sub>a</sub>tanh(W<sup>(1)</sup><sub>a</sub>H’))</p>
+<p>注意计算$\alpha$只使用了H’，而且H’的m是变化的（H’是d<sub>h</sub> x m维的），所以这里的W<sup>(1)</sup><sub>a</sub>是d<sub>m</sub> x d<sub>h</sub>维的，W<sup>(2)</sup><sub>a</sub>是1 x d<sub>m</sub>维的。</p>
+<h3 id="Sentence-Level-Attention-Model"><a href="#Sentence-Level-Attention-Model" class="headerlink" title="Sentence-Level Attention Model"></a>Sentence-Level Attention Model</h3><p>有了target注意力向量，结合aspect嵌入，我们便可以获得句子最终的嵌入（target-and-aspect-specific，计算公式如下：<br>$v^{a}<em>{s,t}=H\beta=\sum</em>{i}{\beta_ih_i}$</p>
+<p>其中H=[h<sub>1</sub>,….,h<sub>L</sub>]，是BiLSTM的输出，$\beta$是句子级别注意力向量。a指定aspect，s指定句子，t指定目标。对于指定的aspect和t，$\beta$的计算公式如下：</p>
+<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-4.jpg" alt="beta"></p>
+<p>个人觉得作者对该公式的解释存在模糊的地方，顺着作者的意思，在这里揣测了一下作者的意图。首先，它将target的表达v<sub>t</sub>和每个隐藏层状态拼接了一下（concatenating），然后接上一个多层神经网络（一层或者两层带tanh激活函数的全连接层），得到的输出和aspect嵌入v<sub>a</sub>相乘，最后接一个softmax。</p>
+<h3 id="Commonsense-Knowledge"><a href="#Commonsense-Knowledge" class="headerlink" title="Commonsense Knowledge"></a>Commonsense Knowledge</h3><p>在本文中，使用SenticNet为我们引入常识性知识，在这个知识库中，“rotten fish”有“KindOf-food”的属性，这可以提供信息让我们使用类似“restaurant”、“food quality”之类的aspect（个人理解这里的aspect选取可以基于这样的规则，SenticNet对每个实体的属性有一个打分，例如“rotten fish”的“KindOf-food”的打分为0.922，那么我们可以根据这些打分来选择aspect）。除此之外，该常识库还可以提供情感信息，比如“rotten fish”的“Arises-joy”的打分为0。我们需要将这些信息编码到我们的模型中。</p>
+<h3 id="Sentic-LSTM"><a href="#Sentic-LSTM" class="headerlink" title="Sentic LSTM"></a>Sentic LSTM</h3><p>Sentic LSTM试图赋予概念（concept）两个重要的作用：1）帮助过滤从一个时间步（time step）流向下一个时间步的信息；2）向记忆单元提供补充信息。<br>在第i个时间步，我们假设一个常识性概念候选集将被触发（triggered）并且映射到一个低维空间。（关于这个候选集作者没有详述如何生成，关于如何映射，作者应该是采用AffectiveSpace中的方法。）我们定义一个包含K个概念的集合{$\mu_{i,1},…,\mu_{i,k}$}，首先对这个集合做一个combine，即：$\mu_i=\frac{1}{K}\sum_j\mu{i,j}$</p>
+<p>作者提到这里的K至多为4。在介绍Sentic LSTM之前，我们先回顾一下LSTM以方便对比，LSTM的公式如下：</p>
+<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-2.jpg" alt="LSTM"></p>
+<p>改进之后的Sentic LSTM公式如下：</p>
+<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-3.jpg" alt="Sentic LSTM"></p>
+<p>首先我们看到，作者假设情感概念（affective concepts）是控制token-level信息的有意义线索，于是$\mu_i$被用在各个门控单元中。其次，增加了一个知识输出门（knowledge output gate）$o^c_i$去输出概念级的知识（W<sub>c</sub>$\mu_i$）。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>为了注入常识性知识，我们使用一个基于语法的概念分析器在每个时间步提取一组候选概念，并使用affecttivespace2作为概念嵌入。如果没有提取概念，则使用零向量作为概念输入。</p>
 	
 	</div>
 	
@@ -551,6 +568,17 @@
 
 
 <!-- show math formula -->
+
+	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config(
+			{ 
+				tex2jax: {
+					inlineMath: [['$','$'], ['\\(','\\)']]
+				} 
+			}
+		);
+	</script>
 
 
 
