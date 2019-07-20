@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM | Welcome to Xu Huang&#39;s Blog
+      pytorch中LSTM对变长句子的处理 | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM》
+			当前文章&nbsp;:&nbsp;《pytorch中LSTM对变长句子的处理》
 		
 	</p>
 
@@ -285,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/12/sentiment2/" itemprop="url">
-		Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM
+	<a href="/2019/07/20/pytorch0/" itemprop="url">
+		pytorch中LSTM对变长句子的处理
 	</a>
 
 	</div>
@@ -299,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/12/sentiment2/" itemprop="url">
-		<time datetime="2019-07-12T02:21:29.003Z" itemprop="datePublished">
-	  		2019-07-12
+	<a href="/2019/07/20/pytorch0/" itemprop="url">
+		<time datetime="2019-07-20T08:00:39.353Z" itemprop="datePublished">
+	  		2019-07-20
 	  </time>
 	</a>
 	&nbsp;
@@ -317,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/12/sentiment2/" itemprop="url">
-		<time datetime="2019-07-12T02:21:29.003Z" itemprop="dateUpdated">
-	  		2019-07-13
+	<a href="/2019/07/20/pytorch0/" itemprop="url">
+		<time datetime="2019-07-20T08:00:39.353Z" itemprop="dateUpdated">
+	  		2019-07-20
 	  </time>
 	</a> 
 
@@ -330,12 +330,12 @@
 			<i class="fa fa-tags"></i>
 			
 	
-		<a href="/tags/nlp/" class=" ">
-			nlp
+		<a href="/tags/pytorch/" class=" ">
+			pytorch
 		</a>
 	
-		<a href="/tags/sentiment/" class=" ">
-			sentiment
+		<a href="/tags/lstm/" class=" ">
+			lstm
 		</a>
 	
 		
@@ -348,43 +348,15 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’"><a href="#‘Targeted-Aspect-Based-Sentiment-Analysis-via-Embedding-Commonsense-Knowledge-into-an-Attentive-LSTM’" class="headerlink" title="‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’"></a>‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’</h1><p>—-本文发表于2018年AAAI会议<br>本文提出了一种通过使用常识性知识的新方法来解决targeted aspect-based情感分析问题，该问题包含aspect-based情感分析（分析对于不同aspect的情感）和targeted情感分析（给定target，分析情感）。本文提出了一种分层注意力机制的LSTM结构（target-level和sentence-level），同时将情感相关概念的常识性知识引入到深度神经网络的端到端训练中进行情感分类。</p>
-<p>虽然现有的方法对于上述两个方面的情感分析已经有了不错的结果，然而仍然面临以下三个问题：</p>
+		<h1 id="pytorch中LSTM对变长句子的处理"><a href="#pytorch中LSTM对变长句子的处理" class="headerlink" title="pytorch中LSTM对变长句子的处理"></a>pytorch中LSTM对变长句子的处理</h1><p>在自然语言处理问题中，以最简单的句子分类为例（比如句子级别情感分类），来说明LSTM对变长句子的处理。（看了网上关于这部分的介绍，大抵互相复制，但感觉都没有说清楚具体怎么用，通过实践，个人总结了使用方法，写在这里）<br>围绕两个函数来说明处理过程：nn.utils.rnn.pack_padded_sequence()和nn.utils.rnn.pad_packed_sequence()</p>
+<h2 id="nn-utils-rnn-pack-padded-sequence"><a href="#nn-utils-rnn-pack-padded-sequence" class="headerlink" title="nn.utils.rnn.pack_padded_sequence()"></a>nn.utils.rnn.pack_padded_sequence()</h2><p>函数说明：该函数共有三个参数，依次为input（输入），length（句子实际长度），batch_first（输入的第一维是否为batch_size，默认为false，通常我们都设置成true）。该函数的返回值是一个PackedSequence对象。接下来，我们详细叙述一下该函数的输入输出。</p>
 <ul>
-<li>首先，对于给定的target，它可能有多个instance（实例，这里的意思是target多次出现）或者是一个multiple words，现有的做法认为所有instance同样重要，并简单的计算其平均值作为结果，这种简化往往会造成冲突。</li>
-<li>其次，现有方法所利用的分层注意力只将与给定目标和aspect相关的情感词的推理隐式地建模为黑箱过程。</li>
-<li>最后，现有的研究缺乏对深层神经网络外部知识的有效整合，如情感或常识知识，这些知识可以直接帮助识别aspect和情感极性。此外，如果没有任何约束，全局注意力模型可能倾向于编码与任务无关的信息。</li>
+<li>input和length：这个参数是我们输入的句子和句子实际长度。具体来说，在一个batch中，比如我们有64个句子（通过填充到统一长度），length里保存了句子的实际长度。在送到该函数的时候，我们要求句子按照实际长度降序的顺序排列，也就是说实际长度长的句子在前，实际长度短的句子在后。举例来说，对于一个size为（4,3）的tensor a：a=torch.Tensor([[1,2,3],[1,0,0],[2,3,0],[4,0,0]])。原始的length为3,1,2,1（用0填充到统一长度），我们需要按照长度降序排列一下再送给该函数，这部分可以在主函数而不是forward函数中完成，需要用到的函数为np.argsort（），这部分可自行百度。排序后的输入和长度为a=torch.Tenson([[1,2,3],[2,3,0],[1,0,0],[4,0,0]])，length为3，2，1，1。这样处理之后才能送给该函数。（此时a的size为（4,3），我们使用unsqueeze()函数扩展最后一维使size变成（4,3,1），可以理解为batch_size=4，每个句子最长为3,1为每个单词的表示（实际中，应该是size应该为(batch_size，max_length,word_dim））<br>这部分需要注意的是在排序的时候，标签也要对应上。</li>
+<li>输出：经过上述处理之后的句子输入到nn.utils.rnn.pack_padded_sequence()中会的到什么呢？（输入的size为（4,3,1））答案是：PackedSequence(data=tensor([[1.],[2.],[1.],[4.],[2.],[3.],[3.]]), batch_sizes=tensor([4, 2, 1]))。我们来解释一下这个结果，PackedSequence包含两个部分：data和batch_size。在第一个时间步，LSTM单元处理每个句子的第一个数即1,2,1,4，长度为4；在第二个时间步，LSTM单元处理每个句子的第二个数即2,3，长度为2（还有2个0被“压缩”了）；在第三个时间步，LSTM单元处理每个句子的第三个数即3，长度为1（还有3个0被“压缩”了）。这样就很方便的理解了输出的data和batch_size！</li>
+<li>此时，我们把得到的PackedSequence对象送给一个LSTM得到输出，<br>lstm=nn.LSTM(1, 1, batch_first=True)<br>out,cn=lstm(a)<br>此时的out是什么呢？它还是一个PackedSequence对象，为PackedSequence(data=tensor([[-0.1365],[-0.0763],[-0.1365],[-0.0081],[-0.1218],[-0.0587],[-0.0730]], grad_fn=<catbackward>), batch_sizes=tensor([4, 2, 1]))。这个输出和输入的PackedSequence对象是对应的。接下来我们需要“解压”该对象，需要用到的函数是nn.utils.rnn.pad_packed_sequence()</catbackward></li>
 </ul>
-<p>本文的贡献主要体现在以下三点：</p>
-<ul>
-<li>提出了一种分层注意力模型，该模型首先明确地关注target，然后再关注整个句子</li>
-<li>我们扩展了经典的LSTM单元，其中包含了与外部知识集成的组件</li>
-<li>我们将情感常识性知识整合到一个深度神经网络中。</li>
-</ul>
-<h2 id="Related-work"><a href="#Related-work" class="headerlink" title="Related work"></a>Related work</h2><p>我们简单的介绍一下情感分析的几个子问题：ABSA，targeted sentiment analysis。以及在深度神经模型中加入外部知识。</p>
-<h3 id="Aspect-Based-Sentiment-Analysis（ABAS）"><a href="#Aspect-Based-Sentiment-Analysis（ABAS）" class="headerlink" title="Aspect-Based Sentiment Analysis（ABAS）"></a>Aspect-Based Sentiment Analysis（ABAS）</h3><p>ABAS就是要分析每个aspect的情感极性，该问题最大的挑战是如何在整个句子中表达指定aspect的情感信息。该部分的研究也是从最初的基于特征工程的方法到基于神经网络的方法，再到引入注意力机制（对于句子中的每个单词，注意力向量量化其情感显著性以及与给定aspect的相关性）。</p>
-<h3 id="Targeted-Sentiment-Analysis"><a href="#Targeted-Sentiment-Analysis" class="headerlink" title="Targeted Sentiment Analysis"></a>Targeted Sentiment Analysis</h3><p>该任务是要分析句子中给定目标实体的情感。因此针对性的情感分析方法是至关重要的，比如，目标依赖LSTM (TDLSTM)和目标连接LSTM(YCLSTM)对情感目标与整个句子之间的交互作用进行建模。</p>
-<h3 id="Incorporating-External-Knowledge"><a href="#Incorporating-External-Knowledge" class="headerlink" title="Incorporating External Knowledge"></a>Incorporating External Knowledge</h3><p>本文提出的模型，Sentic LSTM，受Xu等的启发（add a knowledge recall gate to the cell state of LSTM），不同之处在于，我们使用外部知识来生成hidden output并控制信息流。</p>
-<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="Task-Definition"><a href="#Task-Definition" class="headerlink" title="Task Definition"></a>Task Definition</h3><p>Targeted ABSA的任务定义如下：<br>对于句子s，我们将所有提到的同一个target视为一个target。对于由m个单词组成的target t，定义T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}，其中t<sub>i</sub>指t的第i个单词。Targeted ABSA的任务可以划分为两个子任务：首先，对于一个预定义的集合，找到t的aspect categories；其次，对于t找到它相对于每个aspect的情感。我们举一个例子来说明情况：<br>“I live in [West London] for years. I like it and it is safe to live in much of [west London]. Except [Brent] maybe. ”<br>该句子中包含两个target，WestLondon和Brent。我们的目标是检测aspect和对应的情感极性。在该例子中，对[WestLondon]，输出是[‘general’:positive;’safety’:positive]；对[Brent]的输出是[‘general’:negative;’safety’:negative]。这里的aspect指的是general和safety。</p>
-<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>本文的神经网络架构分为两部分：序列编码器和分层注意力。结构示意图如下所示：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-1.jpg" alt="Framework"></p>
-<p>对于给定的句子，首先用一个BiLSTM进行编码；目标级注意力（target-level attention）将目标表达式位置上的hidden outputs作为输入(用棕色高亮显示)，并在这些单词上计算一个自注意向量v<sub>t</sub>；然后，使用target representation（即v<sub>t</sub>）和aspect嵌入来计算句子级注意力（sentence-level attention）；句子级注意力组件为每个aspect和target对返回一个句子向量；最后这个句子向量将被送到一个分类器中给出情感极性。</p>
-<h3 id="Target-level-attention"><a href="#Target-level-attention" class="headerlink" title="Target-level attention"></a>Target-level attention</h3><p>这里我们先对上文提到的T={t<sub>1</sub>,t<sub>2</sub>,…t<sub>m</sub>}做进一步的说明，即t<sub>i</sub>可以是连续的也可以是非连续的，例如对于上文的例子中的target [West London]的T为T={3,4,20,21}。记T对应的hidden outputs为H’={h<sub>t1</sub>,h<sub>t2</sub>,…h<sub>tm</sub>}，则target t的向量表达v<sub>t</sub>为：<br>v<sub>t</sub>=H’$\alpha$=$\sum_{j}{\alpha_jh_{tj}}$</p>
-<p>其中$\alpha$是target注意力向量，计算公式如下：</p>
-<p>$\alpha$=softmax(W<sup>(2)</sup><sub>a</sub>tanh(W<sup>(1)</sup><sub>a</sub>H’))</p>
-<p>注意计算$\alpha$只使用了H’，而且H’的m是变化的（H’是d<sub>h</sub> x m维的），所以这里的W<sup>(1)</sup><sub>a</sub>是d<sub>m</sub> x d<sub>h</sub>维的，W<sup>(2)</sup><sub>a</sub>是1 x d<sub>m</sub>维的。</p>
-<h3 id="Sentence-Level-Attention-Model"><a href="#Sentence-Level-Attention-Model" class="headerlink" title="Sentence-Level Attention Model"></a>Sentence-Level Attention Model</h3><p>有了target注意力向量，结合aspect嵌入，我们便可以获得句子最终的嵌入（target-and-aspect-specific，计算公式如下：<br>$v^{a}<em>{s,t}=H\beta=\sum</em>{i}{\beta_ih_i}$</p>
-<p>其中H=[h<sub>1</sub>,….,h<sub>L</sub>]，是BiLSTM的输出，$\beta$是句子级别注意力向量。a指定aspect，s指定句子，t指定目标。对于指定的aspect和t，$\beta$的计算公式如下：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-4.jpg" alt="beta"></p>
-<p>个人觉得作者对该公式的解释存在模糊的地方，顺着作者的意思，在这里揣测了一下作者的意图。首先，它将target的表达v<sub>t</sub>和每个隐藏层状态拼接了一下（concatenating），然后接上一个多层神经网络（一层或者两层带tanh激活函数的全连接层），得到的输出和aspect嵌入v<sub>a</sub>相乘，最后接一个softmax。</p>
-<h3 id="Commonsense-Knowledge"><a href="#Commonsense-Knowledge" class="headerlink" title="Commonsense Knowledge"></a>Commonsense Knowledge</h3><p>在本文中，使用SenticNet为我们引入常识性知识，在这个知识库中，“rotten fish”有“KindOf-food”的属性，这可以提供信息让我们使用类似“restaurant”、“food quality”之类的aspect（个人理解这里的aspect选取可以基于这样的规则，SenticNet对每个实体的属性有一个打分，例如“rotten fish”的“KindOf-food”的打分为0.922，那么我们可以根据这些打分来选择aspect）。除此之外，该常识库还可以提供情感信息，比如“rotten fish”的“Arises-joy”的打分为0。我们需要将这些信息编码到我们的模型中。</p>
-<h3 id="Sentic-LSTM"><a href="#Sentic-LSTM" class="headerlink" title="Sentic LSTM"></a>Sentic LSTM</h3><p>Sentic LSTM试图赋予概念（concept）两个重要的作用：1）帮助过滤从一个时间步（time step）流向下一个时间步的信息；2）向记忆单元提供补充信息。<br>在第i个时间步，我们假设一个常识性概念候选集将被触发（triggered）并且映射到一个低维空间。（关于这个候选集作者没有详述如何生成，关于如何映射，作者应该是采用AffectiveSpace中的方法。）我们定义一个包含K个概念的集合{$\mu_{i,1},…,\mu_{i,k}$}，首先对这个集合做一个combine，即：$\mu_i=\frac{1}{K}\sum_j\mu{i,j}$</p>
-<p>作者提到这里的K至多为4。在介绍Sentic LSTM之前，我们先回顾一下LSTM以方便对比，LSTM的公式如下：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-2.jpg" alt="LSTM"></p>
-<p>改进之后的Sentic LSTM公式如下：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment2-3.jpg" alt="Sentic LSTM"></p>
-<p>首先我们看到，作者假设情感概念（affective concepts）是控制token-level信息的有意义线索，于是$\mu_i$被用在各个门控单元中。其次，增加了一个知识输出门（knowledge output gate）$o^c_i$去输出概念级的知识（W<sub>c</sub>$\mu_i$）。</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>为了注入常识性知识，我们使用一个基于语法的概念分析器在每个时间步提取一组候选概念，并使用affecttivespace2作为概念嵌入。如果没有提取概念，则使用零向量作为概念输入。</p>
+<h2 id="nn-utils-rnn-pad-packed-sequence"><a href="#nn-utils-rnn-pad-packed-sequence" class="headerlink" title="nn.utils.rnn.pad_packed_sequence()"></a>nn.utils.rnn.pad_packed_sequence()</h2><p>函数说明：该函数的参数有两个参数，依次为sequence和batch_first，batch_first和nn.utils.rnn.pack_padded_sequence()一样，而sequence就是我们经过LSTM后得到的PackedSequence，那么对于刚刚的PackedSequence使用上述函数得到的是什么呢？out, length = nn.utils.rnn.pad_packed_sequence(out, batch_first=True)。得到两个返回值，结果是：tensor([[[-0.0024],[-0.0222],[-0.0447]],       [[-0.0219],[-0.0446],[ 0.0000]],        [[-0.0024],[ 0.0000],[ 0.0000]],       [[-0.0630],[ 0.0000], [ 0.0000]]], grad_fn=<transposebackward0>)<br>tensor([3, 2, 1, 1])。可以看到，[0.0000]是填充部分的输出，如果我们只是取最后一维，那么必然是有问题的，我们需要根据实际长度来取“最后一个”。如何取“最后一个”可以很简单的使用for循环结合实际长度来做，此部分不做赘述。</transposebackward0></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在使用LSTM批处理变长序列的时候，分为以下几步：<br>1）按照句子实际长度降序排列句子<br>2）使用nn.utils.rnn.pack_padded_sequence()函数“压缩”句子<br>3）将“压缩”后的对象送给LSTM得到输出<br>4）对输出使用nn.utils.rnn.pad_packed_sequence()函数进行“解压缩”<br>5）根据句子实际长度来获得自己需要的部分</p>
 	
 	</div>
 	
@@ -403,12 +375,8 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记" rel="prev">
-				&laquo;上一篇
-			</a>
 		
-		
-			<a href="/2019/07/12/sentiment1/" title="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings" rel="next">
+			<a href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -426,6 +394,52 @@
 <div class="relate-post">
 	
 		<ul>
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记">
+								hexo-markdown使用笔记			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 12日, 2019				
+							</p>
+							<p class="relate-post-content">
+								1.hexo的上下标问题：markdown表示下标可以在下标开始和结束处使用‘~’，但是不知道为啥在Typora好用，但在github网页端不好用。亲测一种非常好用的方法，类似于HTML的标签，即在下标开始和结束时使用sub标签（结束...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="hexo-markdown使用笔记"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM">
+								Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 12日, 2019				
+							</p>
+							<p class="relate-post-content">
+								‘Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM’—-本文发表于2018年AAAI...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM"/>
+							</a>
+						</div>
+					</li>											
+			
 			
 					<li>
 						<div class="relate-post-text">
@@ -468,52 +482,6 @@
 							<a href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Joint entity and relation extraction based on a hybrid neural network"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理">
-								pytorch中LSTM对变长句子的处理			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								七月 20日, 2019				
-							</p>
-							<p class="relate-post-content">
-								pytorch中LSTM对变长句子的处理在自然语言处理问题中，以最简单的句子分类为例（比如句子级别情感分类），来说明LSTM对变长句子的处理。（看了网上关于这部分的介绍，大抵互相复制，但感觉都没有说清楚具体怎么用，通过实践，个人总结了...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="pytorch中LSTM对变长句子的处理"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记">
-								hexo-markdown使用笔记			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								七月 12日, 2019				
-							</p>
-							<p class="relate-post-content">
-								1.hexo的上下标问题：markdown表示下标可以在下标开始和结束处使用‘~’，但是不知道为啥在Typora好用，但在github网页端不好用。亲测一种非常好用的方法，类似于HTML的标签，即在下标开始和结束时使用sub标签（结束...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="hexo-markdown使用笔记"/>
 							</a>
 						</div>
 					</li>											
@@ -591,17 +559,6 @@
 
 
 <!-- show math formula -->
-
-	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-	<script type="text/x-mathjax-config">
-		MathJax.Hub.Config(
-			{ 
-				tex2jax: {
-					inlineMath: [['$','$'], ['\\(','\\)']]
-				} 
-			}
-		);
-	</script>
 
 
 
