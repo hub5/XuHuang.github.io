@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings | Welcome to Xu Huang&#39;s Blog
+      Graph Neural Networks with Generated Parameters for Relation Extraction | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings》
+			当前文章&nbsp;:&nbsp;《Graph Neural Networks with Generated Parameters for Relation Extraction》
 		
 	</p>
 
@@ -285,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings
+	<a href="/2019/08/16/GNN-RE/" itemprop="url">
+		Graph Neural Networks with Generated Parameters for Relation Extraction
 	</a>
 
 	</div>
@@ -299,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		<time datetime="2019-07-12T02:09:43.949Z" itemprop="datePublished">
-	  		2019-07-12
+	<a href="/2019/08/16/GNN-RE/" itemprop="url">
+		<time datetime="2019-08-16T06:31:33.118Z" itemprop="datePublished">
+	  		2019-08-16
 	  </time>
 	</a>
 	&nbsp;
@@ -317,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		<time datetime="2019-07-12T02:09:43.949Z" itemprop="dateUpdated">
-	  		2019-07-12
+	<a href="/2019/08/16/GNN-RE/" itemprop="url">
+		<time datetime="2019-08-16T06:31:33.118Z" itemprop="dateUpdated">
+	  		2019-08-16
 	  </time>
 	</a> 
 
@@ -334,8 +334,12 @@
 			nlp
 		</a>
 	
-		<a href="/tags/sentiment/" class=" ">
-			sentiment
+		<a href="/tags/RE/" class=" ">
+			RE
+		</a>
+	
+		<a href="/tags/gnn/" class=" ">
+			gnn
 		</a>
 	
 		
@@ -348,20 +352,23 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="“SenticNet5-Discovering-Conceptual-Primitives-for-Sentiment-Analysis-by-Means-of-Context-Embeddings”"><a href="#“SenticNet5-Discovering-Conceptual-Primitives-for-Sentiment-Analysis-by-Means-of-Context-Embeddings”" class="headerlink" title="“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”"></a>“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”</h1><p>—-本文发表于2018年AAAI会议<br>在这项工作中，我们将sub-symbolic和symbolic AI结合起来，自动地从文本中发现概念原语（conceptual primitives ），并将它们链接到常识性概念和命名实体，在一个新的三层知识表示中进行情感分析。</p>
-<p>为了解决目前机器学习（尤其是深度学习）的数据依赖性、实验一致性和过程透明性问题，我们需要联合自顶向下（利用symbolic模型的事实，例如语义网络）的方法和自底向上（利用sub-symbolic方法从数据中推断语法模式）的方法。</p>
-<p>SenticNet5为现实世界的物体、动作、事件和人编码了富有表现力和内涵的信息。它不再盲目地使用关键词和单词的共现，而是依赖于与常识性概念相关联的隐含意义。</p>
-<h2 id="概念原语的重要性"><a href="#概念原语的重要性" class="headerlink" title="概念原语的重要性"></a>概念原语的重要性</h2><p>针对概念级别的情感分析和概念袋（bag-of-concepts）模型，由于自然语言的丰富性和模糊性，传统的语义解析方法和n-gram模型容易产生误差。一个有效的方法是通过泛化语义相关的概念来实现一个自顶向下的方法，比如对于munch_toast和slurp_noodles可以映射到概念原语EAT_FOOD。这种概括背后的思想是，有一组有限的mental primitives来表达受影响的概念，有一组有限的mental combination原则来控制它们之间的相互作用。</p>
-<h2 id="发现原语"><a href="#发现原语" class="headerlink" title="发现原语"></a>发现原语</h2><p>对于句子S=[w<sub>1</sub>,w<sub>2</sub>,…w<sub>n</sub>]，句子被分为3部分：left context:[w<sub>1</sub>,…w<sub>i-1</sub>]，right context:[w<sub>i+1</sub>,…w<sub>n</sub>]，target word:[w<sub>i</sub>]。我们的目的是通过上下文（left context和right context）和target word来找到target word的原语替代。<br>该部分的框架如下图所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-1.jpg" alt="Framework"></p>
-<h3 id="Target-Word-Representation"><a href="#Target-Word-Representation" class="headerlink" title="Target Word Representation"></a>Target Word Representation</h3><p>对于target word，它的embedding是d<sub>m</sub>维的向量C，通过如下公式我们得到它的表达c(两层带tanh的全连接)：<br>    C<sub>1</sub>=tanh(W<sub>a</sub>C+b<sub>a</sub>)<br>    c=tanh(W<sub>b</sub>C<sub>1</sub>+b<sub>b</sub>)</p>
-<h3 id="Sentential-Context-Representation"><a href="#Sentential-Context-Representation" class="headerlink" title="Sentential Context Representation"></a>Sentential Context Representation</h3><p>对left context和right context 分别采用带注意力机制的BiLSTM（这里的注意力机制是LSTM最原始的注意力机制，不做赘述）得到它们的表达E<sub>LC</sub>和E<sub>RC</sub>。为了融合这两部分表达，本文使用一个神经张量网络（neural tensor network）T，T是一个2d x 2d x k维的张量，它在k维空间上执行双线性融合。公式如下：<br>    v=tanh(E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>+W[E<sub>LC</sub>,E<sub>RC</sub>]+b)</p>
-<p>对该公式做个简单的说明：首先是E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>，它是对每个i,1&lt;=i&lt;=k，做E’<sub>LC</sub> T<sup>i</sup> E<sub>RC</sub>得到一个标量，然后k个拼接成一个k维向量。W是一个kx4d的张量（E<sub>LC</sub>是2d维的），注意E<sub>LC</sub>和E<sub>RC</sub>两个都是列向量而且是竖着拼接的（由于排版和语法问题，我这里的写法有点小问题，实际上[]内应该竖着写，特做说明），b是一个k维向量。这个v就是最后的上下文表达。</p>
-<h3 id="负采样"><a href="#负采样" class="headerlink" title="负采样"></a>负采样</h3><p>对于每个正确的上下文和目标词表达对，我们根据unigram distribution随机挑选z个负样本，目标函数定义如下：<br>    obj=$\displaystyle \sum_{c,v}{(\log(\sigma(c.v)+\sum^{z}_{i=1}log(\sigma(-c_i.v)))}$</p>
-<h3 id="相似性指数"><a href="#相似性指数" class="headerlink" title="相似性指数"></a>相似性指数</h3><p>对于上下文信息v和目标词c，替代词b的相似性指数为：dist(b,(c,v))=cos(b,c).cos(b,v)<br>具体来说，首先，我们提取了ConceptNet5中出现的verb-noun和adjective-noun形式的所有概念。还提取了每个概念的一个示例句子。然后，我们从concept(动词/形容词或名词)中提取一个单词作为目标单词，其余的句子作为上下文。现在的目标是找到在给定上下文中具有相同词性的目标词的替代。</p>
-<h3 id="将原语链接到概念和实体"><a href="#将原语链接到概念和实体" class="headerlink" title="将原语链接到概念和实体"></a>将原语链接到概念和实体</h3><p>上述的神经网络框架可以发现概念聚类（concept clusters，这块我的理解是具有相同替代词的target word是一类，然后该类的标签是在文本集中出现次数最多的词。但从实现上来说，有一些问题，我暂时还没想明白，先在这留个坑），由于相似性指数，每个概念只属于一个类。这个聚类操作可以将知识图谱从概念层升级到原语层。<br>SenticNet5是一个三层结构的语义网，自底向上是实体层、概念层、原语层。原语层是基本的状态和动作，概念层是通过语义关系连接常识概念的地方，实体层是命名实体集合，它们通过IsA关系连接到常识概念。<br>下图是原语INTACT的语义网络：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-2.jpg" alt="INATCT"></p>
-<p>仔细研究这个图，我们就可以大概了解SenticNet5的思想。实体层的命名实体链接到常识性概念，通过深度学习发现的cluster被用来在概念级将这些原语与其词汇替代(常识性知识)联系起来。<br>基于SenticNet5 我们可以直接在原语层进行极性判断。当我们在原语层定义INTACT是positive之后，那么他的全部语法替代也将是positive，同时影响该极性结果的动词的极性也可以知道（如break的极性是negative，因为它将INTACT的极性变成negative）,同时break的语法替代也是negative的，同时！INTACT的语法替代也是negative（比如crumbled）。<br>除了允许概念的泛化之外，概念原语还非常强大，可以动态地推断多字表达式的极性，就像代数乘法一样。例如，当将肯定结果动词INCREASE与肯定名词连接起来时，结果的极性是肯定的(例如，INCREASE_PLEASURE)。如果名词是负的，相反，结果的极性是负的(例如，INCREASE_LOSS)。</p>
-<h3 id="情感空间"><a href="#情感空间" class="headerlink" title="情感空间"></a>情感空间</h3><p>为了自动推断关键状态的极性，例如INTACT，并对通过深度学习生成的cluster进行一致性检查，我们使用了情感空间，这是一个由随机投影构建的情感常识向量空间。随机投影是一种基于Johnson和Lindenstrauss引理的强大的降维技术（我们不将详述这一引理的理论细节）。利用随机投影的信息共享特性，具有相同语义效价和情感效价的概念可能具有相似的特征，即在情感空间中，传达相同含义的概念和情感倾向于彼此接近。相似性不取决于概念在向量空间中的绝对位置，而取决于概念与原点的夹角。因此，积极的概念，如快乐，庆祝和生日在向量空间的一个区域被发现，而消极的概念，如沮丧，哭泣，和损失在一个完全相反的区域被发现。<br>我们使用这个信息做两件事：其一，推断概念原语的极性，例如将INTACT的极性是positive因为包含它的cluster中大部分原语的概念是正的；其二，保持极性的一致性，丢弃那些和大多数极性相反的概念，例如，丢弃INTACT替代品中极性相反的概念。</p>
+		<h1 id="Graph-Neural-Networks-with-Generated-Parameters-for-Relation-Extraction"><a href="#Graph-Neural-Networks-with-Generated-Parameters-for-Relation-Extraction" class="headerlink" title="Graph Neural Networks with Generated Parameters for Relation Extraction"></a>Graph Neural Networks with Generated Parameters for Relation Extraction</h1><p>—-本文发表于2019年ACL会议。<br>本文提出了基于生成参数的图神经网络模型(GP-GNNs)，利用图神经网络来解决自然语言的关系推理问题。首先利用文本中的实体构建一个全连接的图，然后使用3个模块去处理关系推理：1）一个编码模块用来使边中包含文本信息；2）一种传播模块，它在各个节点之间传播关系信息；3）一个分类模块用来进行预测。</p>
+<h2 id="Graph-Neural-Network-with-Generated-Parameters-GP-GNNs"><a href="#Graph-Neural-Network-with-Generated-Parameters-GP-GNNs" class="headerlink" title="Graph Neural Network with Generated Parameters(GP-GNNs)"></a>Graph Neural Network with Generated Parameters(GP-GNNs)</h2><p>GP-GNNs首先构建一个全连接的图G=(V,E)，其中V是顶点的集合，对于边（v<sub>i</sub>,v<sub>j</sub>）属于E，对应于一个从文本中抽取的序列$s=x_{0}^{i,j},x_{1}^{i,j},…,x_{l-1}^{i,j}$。<br>整体框架图如下所示：</p>
+<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/IE/GNN-RE-1.jpg" alt="framework"></p>
+<h4 id="Encoding-Module"><a href="#Encoding-Module" class="headerlink" title="Encoding Module"></a>Encoding Module</h4><p>编码模块将序列转换为与边对应的转换矩阵，即传播模块的参数。<br>$A_{i,j}^{(n)}=f(E(x_{0}^{i,j}),E(x_{1}^{i,j}),…,E(x_{l-1}^{i,j});\theta_{e}^{n})$<br>其中f可以是LSTM等，E(.)表示嵌入函数，$\theta_{e}^{n}$表示第n层编码模块的参数。</p>
+<h4 id="PropagationModule"><a href="#PropagationModule" class="headerlink" title="PropagationModule"></a>PropagationModule</h4><p>传播模块一层一层地学习节点的表示。节点的初始嵌入，即第0层的表示，是与任务相关的，可以是编码节点特征的嵌入，也可以只是one-hot嵌入。给定层n的表示，通过计算层n+1的表示：<br>$h_{i}^{n+1}=\sum_{v_j \in N(v_i)}\sigma(A_{i,j}^{(n)}h_{j}^{(n)})$</p>
+<p>其中N(v<sub>i</sub>)是节点v<sub>i</sub>的邻居节点，$\sigma(.)$是非线性激活函数。</p>
+<h4 id="Classiﬁcation-Module"><a href="#Classiﬁcation-Module" class="headerlink" title="Classiﬁcation Module"></a>Classiﬁcation Module</h4><p>通常，分类模块将节点表示作为输入并输出预测。因此，GP-GNNs的损失可以定义为：<br>$L=g(h_{0:|V|-1}^{0},h_{0:|V|-1}^{1},…,h_{0:|V|-1}^{K},Y;\theta_c)$</p>
+<p>其中$\theta_c$为分类模块的参数，Y是真实标签。GP-GNNs中的参数使用梯度下降训练。</p>
+<h2 id="Relation-Extraction-with-GP-GNNs"><a href="#Relation-Extraction-with-GP-GNNs" class="headerlink" title="Relation Extraction with GP-GNNs"></a>Relation Extraction with GP-GNNs</h2><p>对于句子s=(x<sub>0</sub>,x<sub>1</sub>,…,x<sub>l-1</sub>)，关系集合R和实体集合$V_{s}={v_{1},v_{2},…}$</p>
+<h4 id="Encoding-Module-1"><a href="#Encoding-Module-1" class="headerlink" title="Encoding Module"></a>Encoding Module</h4><p>为了对实体对(或图中的边)的上下文进行编码，我们首先将position embeddings与word embeddings连接起来:<br>$E(x_{t}^{i,j})=[x_{t};p_{t}^{i,j}]$<br>接着，有：<br>$A_{i,j}^{(n)}=[MLP_{n}(BiLSTM_{n}((E(x_{0}^{i,j}),E(x_{1}^{i,j}),…,E(x_{l-1}^{i,j}))]$</p>
+<p>其中[.]表示把向量reshape成矩阵。</p>
+<h4 id="Propagation-Module"><a href="#Propagation-Module" class="headerlink" title="Propagation Module"></a>Propagation Module</h4><p>使用$h_{i}^{n+1}=\sum_{v_j \in N(v_i)}\sigma(A_{i,j}^{(n)}h_{j}^{(n)})$去传播信息。</p>
+<ul>
+<li>节点的初始嵌入:假设我们专注于提取实体v<sub>i</sub>和实体v<sub>j</sub>之间的关系，其初始嵌入$h_{v_i}^{(0)}=a_{subject}，h_{v_j}^{(0)}=a_{object}$，其他实体初始化为0，我们为head和tail实体的初始嵌入设置了特殊的值，作为一种“标记”消息，我们希望通过传播传递这些消息。注释器a<sub>subject</sub>和a<sub>object</sub>还可以携带关于主题实体和对象实体的先验知识。在实验中，我们推广了门控图神经网络的想法，将a<sub>subject</sub>设置为[1;0]<sup>T</sup>,a<sub>object</sub>设置为[0;1]<sup>T</sup>。</li>
+<li>层数：在我们的上下文中，由于图是紧密连接的，深度被简单地解释为赋予模型更强的表达能力。我们将K作为一个超参数，我们将详细讨论它的有效性。</li>
+</ul>
+<h4 id="Classiﬁcation-Module-1"><a href="#Classiﬁcation-Module-1" class="headerlink" title="Classiﬁcation Module"></a>Classiﬁcation Module</h4><p>输出模块将目标实体对(vi,vj)的嵌入作为输入，通过下式计算：<br>$r_{v_i,v_j}=[[h_{v_i}^{(1)} \circ h_{v_j}^{(1)}]^{T};[h_{v_i}^{(2)} \circ h_{v_j}^{(2)}]^{T};…;[h_{v_i}^{(K)} \circ h_{v_j}^{(K)}]^{T}]$<br>其中，$\circ$是element-wise乘法。基于此，有：<br>$P(r_{v_i,v_j}|h,t,s)=softmax(MLP(r_{v_i,v_j}))$<br>损失函数为交叉熵损失函数。<br>在实践中，我们将每个目标实体对的嵌入项堆叠在一起，以推断每一对实体之间的潜在关系。我们使用PyTorch来实现我们的模型。</p>
 	
 	</div>
 	
@@ -380,12 +387,8 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM" rel="prev">
-				&laquo;上一篇
-			</a>
 		
-		
-			<a href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network" rel="next">
+			<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -403,6 +406,29 @@
 <div class="relate-post">
 	
 		<ul>
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">
+								Context-Aware Representations for Knowledge Base Relation Extraction			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								八月 14日, 2019				
+							</p>
+							<p class="relate-post-content">
+								Context-Aware Representations for Knowledge Base Relation Extraction—-本文发表于2017年的EMNLP会议。这是一篇关于句子级别实体关系抽取的论文，考虑到传统方法只...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Context-Aware Representations for Knowledge Base Relation Extraction"/>
+							</a>
+						</div>
+					</li>											
+			
 			
 					<li>
 						<div class="relate-post-text">
@@ -453,6 +479,29 @@ Hier...
 			
 					<li>
 						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/12/sentiment1/" title="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings">
+								SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 12日, 2019				
+							</p>
+							<p class="relate-post-content">
+								“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”—-本文发表于2018年AAAI...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/12/sentiment1/" title="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
 							<a class="relate-post-title" href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">
 								Joint entity and relation extraction based on a hybrid neural network			
 							</a>
@@ -469,52 +518,6 @@ Hier...
 							<a href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Joint entity and relation extraction based on a hybrid neural network"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">
-								Graph Neural Networks with Generated Parameters for Relation Extraction			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								八月 16日, 2019				
-							</p>
-							<p class="relate-post-content">
-								Graph Neural Networks with Generated Parameters for Relation Extraction—-本文发表于2019年ACL会议。本文提出了基于生成参数的图神经网络模型(GP-GNNs)...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Graph Neural Networks with Generated Parameters for Relation Extraction"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">
-								Context-Aware Representations for Knowledge Base Relation Extraction			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								八月 14日, 2019				
-							</p>
-							<p class="relate-post-content">
-								Context-Aware Representations for Knowledge Base Relation Extraction—-本文发表于2017年的EMNLP会议。这是一篇关于句子级别实体关系抽取的论文，考虑到传统方法只...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Context-Aware Representations for Knowledge Base Relation Extraction"/>
 							</a>
 						</div>
 					</li>											

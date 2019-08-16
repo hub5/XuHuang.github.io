@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings | Welcome to Xu Huang&#39;s Blog
+      A Hierarchical Framework for Relation Extraction with Reinforcement Learning | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings》
+			当前文章&nbsp;:&nbsp;《A Hierarchical Framework for Relation Extraction with Reinforcement Learning》
 		
 	</p>
 
@@ -285,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings
+	<a href="/2019/07/22/jointlearning2/" itemprop="url">
+		A Hierarchical Framework for Relation Extraction with Reinforcement Learning
 	</a>
 
 	</div>
@@ -299,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		<time datetime="2019-07-12T02:09:43.949Z" itemprop="datePublished">
-	  		2019-07-12
+	<a href="/2019/07/22/jointlearning2/" itemprop="url">
+		<time datetime="2019-07-22T07:30:38.291Z" itemprop="datePublished">
+	  		2019-07-22
 	  </time>
 	</a>
 	&nbsp;
@@ -317,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/12/sentiment1/" itemprop="url">
-		<time datetime="2019-07-12T02:09:43.949Z" itemprop="dateUpdated">
-	  		2019-07-12
+	<a href="/2019/07/22/jointlearning2/" itemprop="url">
+		<time datetime="2019-07-22T07:30:38.291Z" itemprop="dateUpdated">
+	  		2019-07-23
 	  </time>
 	</a> 
 
@@ -334,8 +334,8 @@
 			nlp
 		</a>
 	
-		<a href="/tags/sentiment/" class=" ">
-			sentiment
+		<a href="/tags/joint-learing/" class=" ">
+			joint learing
 		</a>
 	
 		
@@ -348,20 +348,16 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="“SenticNet5-Discovering-Conceptual-Primitives-for-Sentiment-Analysis-by-Means-of-Context-Embeddings”"><a href="#“SenticNet5-Discovering-Conceptual-Primitives-for-Sentiment-Analysis-by-Means-of-Context-Embeddings”" class="headerlink" title="“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”"></a>“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”</h1><p>—-本文发表于2018年AAAI会议<br>在这项工作中，我们将sub-symbolic和symbolic AI结合起来，自动地从文本中发现概念原语（conceptual primitives ），并将它们链接到常识性概念和命名实体，在一个新的三层知识表示中进行情感分析。</p>
-<p>为了解决目前机器学习（尤其是深度学习）的数据依赖性、实验一致性和过程透明性问题，我们需要联合自顶向下（利用symbolic模型的事实，例如语义网络）的方法和自底向上（利用sub-symbolic方法从数据中推断语法模式）的方法。</p>
-<p>SenticNet5为现实世界的物体、动作、事件和人编码了富有表现力和内涵的信息。它不再盲目地使用关键词和单词的共现，而是依赖于与常识性概念相关联的隐含意义。</p>
-<h2 id="概念原语的重要性"><a href="#概念原语的重要性" class="headerlink" title="概念原语的重要性"></a>概念原语的重要性</h2><p>针对概念级别的情感分析和概念袋（bag-of-concepts）模型，由于自然语言的丰富性和模糊性，传统的语义解析方法和n-gram模型容易产生误差。一个有效的方法是通过泛化语义相关的概念来实现一个自顶向下的方法，比如对于munch_toast和slurp_noodles可以映射到概念原语EAT_FOOD。这种概括背后的思想是，有一组有限的mental primitives来表达受影响的概念，有一组有限的mental combination原则来控制它们之间的相互作用。</p>
-<h2 id="发现原语"><a href="#发现原语" class="headerlink" title="发现原语"></a>发现原语</h2><p>对于句子S=[w<sub>1</sub>,w<sub>2</sub>,…w<sub>n</sub>]，句子被分为3部分：left context:[w<sub>1</sub>,…w<sub>i-1</sub>]，right context:[w<sub>i+1</sub>,…w<sub>n</sub>]，target word:[w<sub>i</sub>]。我们的目的是通过上下文（left context和right context）和target word来找到target word的原语替代。<br>该部分的框架如下图所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-1.jpg" alt="Framework"></p>
-<h3 id="Target-Word-Representation"><a href="#Target-Word-Representation" class="headerlink" title="Target Word Representation"></a>Target Word Representation</h3><p>对于target word，它的embedding是d<sub>m</sub>维的向量C，通过如下公式我们得到它的表达c(两层带tanh的全连接)：<br>    C<sub>1</sub>=tanh(W<sub>a</sub>C+b<sub>a</sub>)<br>    c=tanh(W<sub>b</sub>C<sub>1</sub>+b<sub>b</sub>)</p>
-<h3 id="Sentential-Context-Representation"><a href="#Sentential-Context-Representation" class="headerlink" title="Sentential Context Representation"></a>Sentential Context Representation</h3><p>对left context和right context 分别采用带注意力机制的BiLSTM（这里的注意力机制是LSTM最原始的注意力机制，不做赘述）得到它们的表达E<sub>LC</sub>和E<sub>RC</sub>。为了融合这两部分表达，本文使用一个神经张量网络（neural tensor network）T，T是一个2d x 2d x k维的张量，它在k维空间上执行双线性融合。公式如下：<br>    v=tanh(E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>+W[E<sub>LC</sub>,E<sub>RC</sub>]+b)</p>
-<p>对该公式做个简单的说明：首先是E’<sub>LC</sub> T<sup>[1:k]</sup> E<sub>RC</sub>，它是对每个i,1&lt;=i&lt;=k，做E’<sub>LC</sub> T<sup>i</sup> E<sub>RC</sub>得到一个标量，然后k个拼接成一个k维向量。W是一个kx4d的张量（E<sub>LC</sub>是2d维的），注意E<sub>LC</sub>和E<sub>RC</sub>两个都是列向量而且是竖着拼接的（由于排版和语法问题，我这里的写法有点小问题，实际上[]内应该竖着写，特做说明），b是一个k维向量。这个v就是最后的上下文表达。</p>
-<h3 id="负采样"><a href="#负采样" class="headerlink" title="负采样"></a>负采样</h3><p>对于每个正确的上下文和目标词表达对，我们根据unigram distribution随机挑选z个负样本，目标函数定义如下：<br>    obj=$\displaystyle \sum_{c,v}{(\log(\sigma(c.v)+\sum^{z}_{i=1}log(\sigma(-c_i.v)))}$</p>
-<h3 id="相似性指数"><a href="#相似性指数" class="headerlink" title="相似性指数"></a>相似性指数</h3><p>对于上下文信息v和目标词c，替代词b的相似性指数为：dist(b,(c,v))=cos(b,c).cos(b,v)<br>具体来说，首先，我们提取了ConceptNet5中出现的verb-noun和adjective-noun形式的所有概念。还提取了每个概念的一个示例句子。然后，我们从concept(动词/形容词或名词)中提取一个单词作为目标单词，其余的句子作为上下文。现在的目标是找到在给定上下文中具有相同词性的目标词的替代。</p>
-<h3 id="将原语链接到概念和实体"><a href="#将原语链接到概念和实体" class="headerlink" title="将原语链接到概念和实体"></a>将原语链接到概念和实体</h3><p>上述的神经网络框架可以发现概念聚类（concept clusters，这块我的理解是具有相同替代词的target word是一类，然后该类的标签是在文本集中出现次数最多的词。但从实现上来说，有一些问题，我暂时还没想明白，先在这留个坑），由于相似性指数，每个概念只属于一个类。这个聚类操作可以将知识图谱从概念层升级到原语层。<br>SenticNet5是一个三层结构的语义网，自底向上是实体层、概念层、原语层。原语层是基本的状态和动作，概念层是通过语义关系连接常识概念的地方，实体层是命名实体集合，它们通过IsA关系连接到常识概念。<br>下图是原语INTACT的语义网络：</p>
-<p><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/sentiment/sentiment1-2.jpg" alt="INATCT"></p>
-<p>仔细研究这个图，我们就可以大概了解SenticNet5的思想。实体层的命名实体链接到常识性概念，通过深度学习发现的cluster被用来在概念级将这些原语与其词汇替代(常识性知识)联系起来。<br>基于SenticNet5 我们可以直接在原语层进行极性判断。当我们在原语层定义INTACT是positive之后，那么他的全部语法替代也将是positive，同时影响该极性结果的动词的极性也可以知道（如break的极性是negative，因为它将INTACT的极性变成negative）,同时break的语法替代也是negative的，同时！INTACT的语法替代也是negative（比如crumbled）。<br>除了允许概念的泛化之外，概念原语还非常强大，可以动态地推断多字表达式的极性，就像代数乘法一样。例如，当将肯定结果动词INCREASE与肯定名词连接起来时，结果的极性是肯定的(例如，INCREASE_PLEASURE)。如果名词是负的，相反，结果的极性是负的(例如，INCREASE_LOSS)。</p>
-<h3 id="情感空间"><a href="#情感空间" class="headerlink" title="情感空间"></a>情感空间</h3><p>为了自动推断关键状态的极性，例如INTACT，并对通过深度学习生成的cluster进行一致性检查，我们使用了情感空间，这是一个由随机投影构建的情感常识向量空间。随机投影是一种基于Johnson和Lindenstrauss引理的强大的降维技术（我们不将详述这一引理的理论细节）。利用随机投影的信息共享特性，具有相同语义效价和情感效价的概念可能具有相似的特征，即在情感空间中，传达相同含义的概念和情感倾向于彼此接近。相似性不取决于概念在向量空间中的绝对位置，而取决于概念与原点的夹角。因此，积极的概念，如快乐，庆祝和生日在向量空间的一个区域被发现，而消极的概念，如沮丧，哭泣，和损失在一个完全相反的区域被发现。<br>我们使用这个信息做两件事：其一，推断概念原语的极性，例如将INTACT的极性是positive因为包含它的cluster中大部分原语的概念是正的；其二，保持极性的一致性，丢弃那些和大多数极性相反的概念，例如，丢弃INTACT替代品中极性相反的概念。</p>
+		<h1 id="“A-Hierarchical-Framework-for-Relation-Extraction-with-Reinforcement-Learning”"><a href="#“A-Hierarchical-Framework-for-Relation-Extraction-with-Reinforcement-Learning”" class="headerlink" title="“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”"></a>“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”</h1><p>—-本文发表于2019年的AAAI会议，采用两层结构来进行关系抽取。</p>
+<h2 id="Hierarchical-Extraction-Framework"><a href="#Hierarchical-Extraction-Framework" class="headerlink" title="Hierarchical Extraction Framework"></a>Hierarchical Extraction Framework</h2><p>整个模型首先通过一个high-level的强化学习过程检测relation indicators（关系指示器），然后利用一个低层次的强化学习过程给给出该关系涉及的两个实体。</p>
+<h4 id="Relation-indicator"><a href="#Relation-indicator" class="headerlink" title="Relation indicator"></a>Relation indicator</h4><p>关系指示器用来指明在一个具体的位置，已经有足够的信息来识别一种语义关系了。</p>
+<h4 id="Relation-Detection-with-High-level-RL"><a href="#Relation-Detection-with-High-level-RL" class="headerlink" title="Relation Detection with High-level RL"></a>Relation Detection with High-level RL</h4><p>对于句子S=w<sub>1</sub>w<sub>1</sub>…w<sub>L</sub>，该层次的强化学习在每个时刻考虑一个单词。在t时刻，对于强化学习有以下要素：</p>
+<ul>
+<li>option：o<sub>t</sub>从O={NR}$\cup$R选择，其中NR表示在没有关系，R是关系集合</li>
+<li>state：$s^{h}<em>{t}$是该层在t时刻的状态，通过下式计算：$s^{h}</em>{t}=f^{h}(W^{h}<em>{s}[h</em>{t};v^{r}<em>{t};s</em>{t-1}])$，其中，h<sub>t</sub>是来自BiLSTM，$v^{r}_{t}$是关系向量（最近一次非NR关系的嵌入），s<sub>t-1</sub>是上一时刻的状态。f<sup>h</sup>是使用MLP实现的非线性函数。</li>
+<li>policy：stochastic policy $\mu$为状态指定关系概率。$o_{t}$~$\mu(o_t|s^h_t)=softmax(W_{\mu}s^h_t)$</li>
+<li>reward：</li>
+</ul>
 	
 	</div>
 	
@@ -380,12 +376,12 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM" rel="prev">
+			<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction" rel="prev">
 				&laquo;上一篇
 			</a>
 		
 		
-			<a href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network" rel="next">
+			<a href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -406,30 +402,6 @@
 			
 					<li>
 						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning">
-								A Hierarchical Framework for Relation Extraction with Reinforcement Learning			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								七月 22日, 2019				
-							</p>
-							<p class="relate-post-content">
-								“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”—-本文发表于2019年的AAAI会议，采用两层结构来进行关系抽取。
-Hier...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="A Hierarchical Framework for Relation Extraction with Reinforcement Learning"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
 							<a class="relate-post-title" href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM">
 								Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM			
 							</a>
@@ -446,6 +418,29 @@ Hier...
 							<a href="/2019/07/12/sentiment2/" title="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Targeted Aspect-Based Sentiment Analysis via Embedding Commonsense Knowledge into an Attentive LSTM"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/12/sentiment1/" title="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings">
+								SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 12日, 2019				
+							</p>
+							<p class="relate-post-content">
+								“SenticNet5:Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings”—-本文发表于2018年AAAI...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/12/sentiment1/" title="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="SenticNet5 - Discovering Conceptual Primitives  for Sentiment Analysis by Means of Context Embeddings"/>
 							</a>
 						</div>
 					</li>											
@@ -638,17 +633,6 @@ Hier...
 
 
 <!-- show math formula -->
-
-	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-	<script type="text/x-mathjax-config">
-		MathJax.Hub.Config(
-			{ 
-				tex2jax: {
-					inlineMath: [['$','$'], ['\\(','\\)']]
-				} 
-			}
-		);
-	</script>
 
 
 
