@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      A Hierarchical Framework for Relation Extraction with Reinforcement Learning | Welcome to Xu Huang&#39;s Blog
+      End-To-EndMemoryNetworks | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《A Hierarchical Framework for Relation Extraction with Reinforcement Learning》
+			当前文章&nbsp;:&nbsp;《End-To-EndMemoryNetworks》
 		
 	</p>
 
@@ -285,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/22/jointlearning2/" itemprop="url">
-		A Hierarchical Framework for Relation Extraction with Reinforcement Learning
+	<a href="/2019/08/16/MN/" itemprop="url">
+		End-To-EndMemoryNetworks
 	</a>
 
 	</div>
@@ -299,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/22/jointlearning2/" itemprop="url">
-		<time datetime="2019-07-22T07:30:38.291Z" itemprop="datePublished">
-	  		2019-07-22
+	<a href="/2019/08/16/MN/" itemprop="url">
+		<time datetime="2019-08-16T10:28:48.766Z" itemprop="datePublished">
+	  		2019-08-16
 	  </time>
 	</a>
 	&nbsp;
@@ -317,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/22/jointlearning2/" itemprop="url">
-		<time datetime="2019-07-22T07:30:38.291Z" itemprop="dateUpdated">
-	  		2019-07-23
+	<a href="/2019/08/16/MN/" itemprop="url">
+		<time datetime="2019-08-16T10:28:48.766Z" itemprop="dateUpdated">
+	  		2019-08-18
 	  </time>
 	</a> 
 
@@ -334,8 +334,12 @@
 			nlp
 		</a>
 	
-		<a href="/tags/joint-learing/" class=" ">
-			joint learing
+		<a href="/tags/QA/" class=" ">
+			QA
+		</a>
+	
+		<a href="/tags/memory-network/" class=" ">
+			memory-network
 		</a>
 	
 		
@@ -348,16 +352,33 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="“A-Hierarchical-Framework-for-Relation-Extraction-with-Reinforcement-Learning”"><a href="#“A-Hierarchical-Framework-for-Relation-Extraction-with-Reinforcement-Learning”" class="headerlink" title="“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”"></a>“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”</h1><p>—-本文发表于2019年的AAAI会议，采用两层结构来进行关系抽取。</p>
-<h2 id="Hierarchical-Extraction-Framework"><a href="#Hierarchical-Extraction-Framework" class="headerlink" title="Hierarchical Extraction Framework"></a>Hierarchical Extraction Framework</h2><p>整个模型首先通过一个high-level的强化学习过程检测relation indicators（关系指示器），然后利用一个低层次的强化学习过程给给出该关系涉及的两个实体。</p>
-<h4 id="Relation-indicator"><a href="#Relation-indicator" class="headerlink" title="Relation indicator"></a>Relation indicator</h4><p>关系指示器用来指明在一个具体的位置，已经有足够的信息来识别一种语义关系了。</p>
-<h4 id="Relation-Detection-with-High-level-RL"><a href="#Relation-Detection-with-High-level-RL" class="headerlink" title="Relation Detection with High-level RL"></a>Relation Detection with High-level RL</h4><p>对于句子S=w<sub>1</sub>w<sub>1</sub>…w<sub>L</sub>，该层次的强化学习在每个时刻考虑一个单词。在t时刻，对于强化学习有以下要素：</p>
+		<h1 id="End-To-End-Memory-Networks"><a href="#End-To-End-Memory-Networks" class="headerlink" title="End-To-End Memory Networks"></a>End-To-End Memory Networks</h1><p>—-本文发表于2015年的NIPS会议。<br>人工智能研究面临的两大挑战是，建立能够在回答问题或完成任务时执行多个计算步骤的模型，以及能够描述顺序数据中的长期依赖关系的模型。<br>在这项工作中，我们提出了一种新的递归神经网络(RNN)结构，在输出一个符号之前，recurrence可以从一个可能很大的外部存储器中进行多次读取。我们将通过实验证明，长期记忆中的multiple hops对模型性能至关重要，并且训练记忆表示可以以可伸缩的方式集成到我们的端到端神经网络模型中。</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p>该模型有一组要存储在内存中的离散输入集合x<sub>1</sub>,…,x<sub>n</sub>，一个查询q和一个输出a。模型将所有的x写到内存中直到达到一个固定的buffer size。然后为x和q找到一个连续表示，然后通过multiple hops对连续表示进行处理，输出a。</p>
+<h4 id="Single-Layer"><a href="#Single-Layer" class="headerlink" title="Single Layer"></a>Single Layer</h4><p>我们首先在单层案例中描述我们的模型，它实现了一个单内存跳操作(single memory hop）。然后，我们展示了它可以被堆叠以在内存中提供多个跳转(multiple hops)。</p>
 <ul>
-<li>option：o<sub>t</sub>从O={NR}$\cup$R选择，其中NR表示在没有关系，R是关系集合</li>
-<li>state：$s^{h}<em>{t}$是该层在t时刻的状态，通过下式计算：$s^{h}</em>{t}=f^{h}(W^{h}<em>{s}[h</em>{t};v^{r}<em>{t};s</em>{t-1}])$，其中，h<sub>t</sub>是来自BiLSTM，$v^{r}_{t}$是关系向量（最近一次非NR关系的嵌入），s<sub>t-1</sub>是上一时刻的状态。f<sup>h</sup>是使用MLP实现的非线性函数。</li>
-<li>policy：stochastic policy $\mu$为状态指定关系概率。$o_{t}$~$\mu(o_t|s^h_t)=softmax(W_{\mu}s^h_t)$</li>
-<li>reward：</li>
+<li>Input memory representation：对于输入x<sub>i</sub>，他的嵌入为m<sub>i</sub>，利用以下公式度量u和m<sub>i</sub>的匹配程度：$p_i=softmax(u^T m_i)$。这样定义的p是输入的一个概率。（u即查询向量）</li>
+<li>Output memory representation：每个x<sub>i</sub>对应一个输出向量c<sub>i</sub>，memory的输出o为$o=\sum_{i}{p_ic_i}$。</li>
+<li>Generating the ﬁnal prediction：$a=softmax(W(o+u))$。</li>
 </ul>
+<p>整个模型的框架如下图(a)部分所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/mn/mn-framework-1.jpg" alt="framework"><br>其中A是将x<sub>i</sub>嵌入成m<sub>i</sub>的矩阵，B是查询嵌入矩阵，C是将x<sub>i</sub>嵌入成c<sub>i</sub>的矩阵。</p>
+<h4 id="Multiple-Layers"><a href="#Multiple-Layers" class="headerlink" title="Multiple Layers"></a>Multiple Layers</h4><p>现在我们扩展模型来处理K跳操作。内存层按上图(b)部分的方式堆叠：</p>
+<ul>
+<li>第k+1层的输入u<sup>k+1</sup>，是第k层的输入u<sup>k</sup>和o<sup>k</sup>输出的和，即$u^{k+1}=u^{k}+o^{k}$。</li>
+<li>每层有自己的嵌入矩阵A<sup>k</sup>和C<sup>k</sup>。</li>
+</ul>
+<p>本文探索了两种方式的weight tying。</p>
+<ul>
+<li>Adjacent：A<sup>k+1</sup>=C<sup>k</sup>。还限制了答案预测矩阵与最终的输出嵌入相同，即W<sup>T</sup>=C<sup>K</sup>，以及问题嵌入矩阵B=A<sup>1</sup></li>
+<li>Layer-wise (RNN-like)：A<sup>1</sup>=A<sup>2</sup>=…=A<sup>K</sup>，C<sup>1</sup>=C<sup>2</sup>=…=C<sup>K</sup>。我们还发现使用$u^{k+1}=Hu^{k}+o^{k}$效果比之前的没有H的更好。</li>
+</ul>
+<h2 id="Synthetic-Question-and-Answering-Experiments"><a href="#Synthetic-Question-and-Answering-Experiments" class="headerlink" title="Synthetic Question and Answering Experiments"></a>Synthetic Question and Answering Experiments</h2><p>本文使用了一个synthetic QA数据集，总共有20种不同类型的任务来探测不同形式的推理和演绎。示例如下：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/mn/mn-example-2.jpg" alt="example"><br>注意到有些句子与预测是无关的，我们需要训练模型让其自动判断。</p>
+<h4 id="Model-Details"><a href="#Model-Details" class="headerlink" title="Model Details"></a>Model Details</h4><p>除另有说明外，所有实验均采用K = 3跳模型，并采用adjacent权值分配方案。</p>
+<ul>
+<li>Sentence Representation：分为两种方式，1）bag-of-words (BoW) representation，嵌入每个单词并对得到的向量求和，例如对于$x_i$，有$m_i=\sum_{j}{Ax_{ij}},c_i=\sum_{j}Cx_{ij},u=\sum_{j}Bq_j$，该方法的缺点是无法捕捉词的顺序。2）加入位置信息，$m_i=\sum_{j}{l_j * Ax_{ij}}$，其中*是element-wise乘。$l_j$是一个列向量，满足$l_{kj}=(1-j/J)-(k/d)(1-2j/J)$，其中J是句子长度，d是嵌入维度。</li>
+<li>Temporal Encoding：许多QA任务涉及到时间上下文概念，因此，我们修改为$m_i=\sum_{j}{Ax_{ij}}+T_A(i)$，其中$T_A{(i)}$为$T_A$的第i行，该矩阵编码时间信息。类似的对输出也做同样的处理。</li>
+<li>Learning time invariance by injecting random noise：我们发现添加“虚拟”记忆来规范$T_A$是有帮助的。也就是说，在训练的时候，我们可以随机地将10%的空白memory添加到stories中。我们将这种方法称为随机噪声(RN)。</li>
+</ul>
+<h2 id="Language-Modeling-Experiments"><a href="#Language-Modeling-Experiments" class="headerlink" title="Language Modeling Experiments"></a>Language Modeling Experiments</h2><p>语言建模的目标是给定文本中前面单词序列x，预测下一个单词。该模型可以很方便的应用到该问题上。<br>我们现在在词的层次上操作，而不是在句子的层次上。因此，序列中的前N个单词(包括当前单词)分别被嵌入到内存中。每个内存单元只包含一个单词，因此不需要在QA任务中使用BoW或线性映射表示。由于已经没有问题了，于是q被固定为常量（0.1），softmax预测词汇表中的哪个单词(大小为V)是序列中的下一个单词。</p>
 	
 	</div>
 	
@@ -376,12 +397,8 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction" rel="prev">
-				&laquo;上一篇
-			</a>
 		
-		
-			<a href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理" rel="next">
+			<a href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -399,6 +416,76 @@
 <div class="relate-post">
 	
 		<ul>
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">
+								Graph Neural Networks with Generated Parameters for Relation Extraction			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								八月 16日, 2019				
+							</p>
+							<p class="relate-post-content">
+								Graph Neural Networks with Generated Parameters for Relation Extraction—-本文发表于2019年ACL会议。本文提出了基于生成参数的图神经网络模型(GP-GNNs)...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Graph Neural Networks with Generated Parameters for Relation Extraction"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">
+								Context-Aware Representations for Knowledge Base Relation Extraction			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								八月 14日, 2019				
+							</p>
+							<p class="relate-post-content">
+								Context-Aware Representations for Knowledge Base Relation Extraction—-本文发表于2017年的EMNLP会议。这是一篇关于句子级别实体关系抽取的论文，考虑到传统方法只...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Context-Aware Representations for Knowledge Base Relation Extraction"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning">
+								A Hierarchical Framework for Relation Extraction with Reinforcement Learning			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 22日, 2019				
+							</p>
+							<p class="relate-post-content">
+								“A Hierarchical Framework for Relation Extraction with Reinforcement Learning”—-本文发表于2019年的AAAI会议，采用两层结构来进行关系抽取。
+Hier...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="A Hierarchical Framework for Relation Extraction with Reinforcement Learning"/>
+							</a>
+						</div>
+					</li>											
+			
 			
 					<li>
 						<div class="relate-post-text">
@@ -464,75 +551,6 @@
 							<a href="/2019/07/10/jointlearning1/" title="Joint entity and relation extraction based on a hybrid neural network">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Joint entity and relation extraction based on a hybrid neural network"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/08/16/MN/" title="End-To-EndMemoryNetworks">
-								End-To-EndMemoryNetworks			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								八月 16日, 2019				
-							</p>
-							<p class="relate-post-content">
-								End-To-End Memory Networks—-本文发表于2015年的NIPS会议。人工智能研究面临的两大挑战是，建立能够在回答问题或完成任务时执行多个计算步骤的模型，以及能够描述顺序数据中的长期依赖关系的模型。在这项工作中，...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/08/16/MN/" title="End-To-EndMemoryNetworks">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="End-To-EndMemoryNetworks"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">
-								Graph Neural Networks with Generated Parameters for Relation Extraction			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								八月 16日, 2019				
-							</p>
-							<p class="relate-post-content">
-								Graph Neural Networks with Generated Parameters for Relation Extraction—-本文发表于2019年ACL会议。本文提出了基于生成参数的图神经网络模型(GP-GNNs)...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/08/16/GNN-RE/" title="Graph Neural Networks with Generated Parameters for Relation Extraction">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Graph Neural Networks with Generated Parameters for Relation Extraction"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">
-								Context-Aware Representations for Knowledge Base Relation Extraction			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								八月 14日, 2019				
-							</p>
-							<p class="relate-post-content">
-								Context-Aware Representations for Knowledge Base Relation Extraction—-本文发表于2017年的EMNLP会议。这是一篇关于句子级别实体关系抽取的论文，考虑到传统方法只...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2019/08/14/CA-RE/" title="Context-Aware Representations for Knowledge Base Relation Extraction">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Context-Aware Representations for Knowledge Base Relation Extraction"/>
 							</a>
 						</div>
 					</li>											
@@ -656,6 +674,17 @@
 
 
 <!-- show math formula -->
+
+	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config(
+			{ 
+				tex2jax: {
+					inlineMath: [['$','$'], ['\\(','\\)']]
+				} 
+			}
+		);
+	</script>
 
 
 
