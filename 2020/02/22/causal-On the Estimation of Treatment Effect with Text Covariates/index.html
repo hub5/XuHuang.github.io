@@ -13,7 +13,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <title>
     
-      pytorch中LSTM对变长句子的处理 | Welcome to Xu Huang&#39;s Blog
+      On the Estimation of Treatment Effect with Text Covariates | Welcome to Xu Huang&#39;s Blog
     
   </title>
   <meta name="author" content="Xu Huang">
@@ -164,7 +164,7 @@
 	<!-- Page title -->
 	<p>
 		
-			当前文章&nbsp;:&nbsp;《pytorch中LSTM对变长句子的处理》
+			当前文章&nbsp;:&nbsp;《On the Estimation of Treatment Effect with Text Covariates》
 		
 	</p>
 
@@ -285,8 +285,8 @@
 	<div class="article-title">
 		<i class="fa fa-paper-plane-o" aria-hidden="true"></i>
 		
-	<a href="/2019/07/20/pytorch0/" itemprop="url">
-		pytorch中LSTM对变长句子的处理
+	<a href="/2020/02/22/causal-On the Estimation of Treatment Effect with Text Covariates/" itemprop="url">
+		On the Estimation of Treatment Effect with Text Covariates
 	</a>
 
 	</div>
@@ -299,9 +299,9 @@
 
 	发布于
 
-	<a href="/2019/07/20/pytorch0/" itemprop="url">
-		<time datetime="2019-07-20T08:00:39.353Z" itemprop="datePublished">
-	  		2019-07-20
+	<a href="/2020/02/22/causal-On the Estimation of Treatment Effect with Text Covariates/" itemprop="url">
+		<time datetime="2020-02-22T08:34:26.670Z" itemprop="datePublished">
+	  		2020-02-22
 	  </time>
 	</a>
 	&nbsp;
@@ -317,9 +317,9 @@
 
 	更新于
 
-	<a href="/2019/07/20/pytorch0/" itemprop="url">
-		<time datetime="2019-07-20T08:00:39.353Z" itemprop="dateUpdated">
-	  		2019-07-20
+	<a href="/2020/02/22/causal-On the Estimation of Treatment Effect with Text Covariates/" itemprop="url">
+		<time datetime="2020-02-22T08:34:26.670Z" itemprop="dateUpdated">
+	  		2020-02-25
 	  </time>
 	</a> 
 
@@ -330,12 +330,8 @@
 			<i class="fa fa-tags"></i>
 			
 	
-		<a href="/tags/pytorch/" class=" ">
-			pytorch
-		</a>
-	
-		<a href="/tags/lstm/" class=" ">
-			lstm
+		<a href="/tags/causal/" class=" ">
+			causal
 		</a>
 	
 		
@@ -348,15 +344,39 @@
 	</div>
 
 	<div class="article-content" id="article-content">
-		<h1 id="pytorch中LSTM对变长句子的处理"><a href="#pytorch中LSTM对变长句子的处理" class="headerlink" title="pytorch中LSTM对变长句子的处理"></a>pytorch中LSTM对变长句子的处理</h1><p>在自然语言处理问题中，以最简单的句子分类为例（比如句子级别情感分类），来说明LSTM对变长句子的处理。（看了网上关于这部分的介绍，大抵互相复制，但感觉都没有说清楚具体怎么用，通过实践，个人总结了使用方法，写在这里）<br>围绕两个函数来说明处理过程：nn.utils.rnn.pack_padded_sequence()和nn.utils.rnn.pad_packed_sequence()</p>
-<h2 id="nn-utils-rnn-pack-padded-sequence"><a href="#nn-utils-rnn-pack-padded-sequence" class="headerlink" title="nn.utils.rnn.pack_padded_sequence()"></a>nn.utils.rnn.pack_padded_sequence()</h2><p>函数说明：该函数共有三个参数，依次为input（输入），length（句子实际长度），batch_first（输入的第一维是否为batch_size，默认为false，通常我们都设置成true）。该函数的返回值是一个PackedSequence对象。接下来，我们详细叙述一下该函数的输入输出。</p>
+		<h2 id="On-the-Estimation-of-Treatment-Effect-with-Text-Covariates"><a href="#On-the-Estimation-of-Treatment-Effect-with-Text-Covariates" class="headerlink" title="On the Estimation of Treatment Effect with Text Covariates"></a>On the Estimation of Treatment Effect with Text Covariates</h2><p>本文发表于2019年IJCAI会议。</p>
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>Treatment effect，是指一个变量（treatment）对另一个变量（outcome）的作用，定义为对treatment进行干预后结果的改变。 本文是研究用文本协变量（textual covariates）估计treatment effect。所谓协变量是一个独立变量（解释变量），不为实验所操纵，但仍影响实验结果。不同于数值型协变量，文本型协变量受到的关注更少而且包含更多信息以及层次（word level，topic level，semantics level）。文本数据的这一特性给文本协变量的处理效果估计带来了新的挑战。特别是，一些文本协变量对treatment assignment有很强的预测作用，但对outcome却没有那么大的预测作用，这种协变量被称为nearly instrumental variables（近工具变量）。现有的工作已经表明，对nearly instrumental variables的调节往往会放大因果效应分析中的偏差。因此，在评价treatment effect时应将其排除。然而,当协变量包含文本数据,re-weighting或feature selection based approaches将是有限的,因为这些方法只能被限制在一个特定级别的信息文本中包含的变量,从而不足以总结文本的协变量,进一步导致不足以过滤掉nearly instrumental variables。</p>
+<h4 id="Preliminaries"><a href="#Preliminaries" class="headerlink" title="Preliminaries"></a>Preliminaries</h4><p>首先我们定义一些符号：</p>
 <ul>
-<li>input和length：这个参数是我们输入的句子和句子实际长度。具体来说，在一个batch中，比如我们有64个句子（通过填充到统一长度），length里保存了句子的实际长度。在送到该函数的时候，我们要求句子按照实际长度降序的顺序排列，也就是说实际长度长的句子在前，实际长度短的句子在后。举例来说，对于一个size为（4,3）的tensor a：a=torch.Tensor([[1,2,3],[1,0,0],[2,3,0],[4,0,0]])。原始的length为3,1,2,1（用0填充到统一长度），我们需要按照长度降序排列一下再送给该函数，这部分可以在主函数而不是forward函数中完成，需要用到的函数为np.argsort（），这部分可自行百度。排序后的输入和长度为a=torch.Tenson([[1,2,3],[2,3,0],[1,0,0],[4,0,0]])，length为3，2，1，1。这样处理之后才能送给该函数。（此时a的size为（4,3），我们使用unsqueeze()函数扩展最后一维使size变成（4,3,1），可以理解为batch_size=4，每个句子最长为3,1为每个单词的表示（实际中，应该是size应该为(batch_size，max_length,word_dim））<br>这部分需要注意的是在排序的时候，标签也要对应上。</li>
-<li>输出：经过上述处理之后的句子输入到nn.utils.rnn.pack_padded_sequence()中会的到什么呢？（输入的size为（4,3,1））答案是：PackedSequence(data=tensor([[1.],[2.],[1.],[4.],[2.],[3.],[3.]]), batch_sizes=tensor([4, 2, 1]))。我们来解释一下这个结果，PackedSequence包含两个部分：data和batch_size。在第一个时间步，LSTM单元处理每个句子的第一个数即1,2,1,4，长度为4；在第二个时间步，LSTM单元处理每个句子的第二个数即2,3，长度为2（还有2个0被“压缩”了）；在第三个时间步，LSTM单元处理每个句子的第三个数即3，长度为1（还有3个0被“压缩”了）。这样就很方便的理解了输出的data和batch_size！</li>
-<li>此时，我们把得到的PackedSequence对象送给一个LSTM得到输出，<br>lstm=nn.LSTM(1, 1, batch_first=True)<br>out,cn=lstm(a)<br>此时的out是什么呢？它还是一个PackedSequence对象，为PackedSequence(data=tensor([[-0.1365],[-0.0763],[-0.1365],[-0.0081],[-0.1218],[-0.0587],[-0.0730]], grad_fn=<catbackward>), batch_sizes=tensor([4, 2, 1]))。这个输出和输入的PackedSequence对象是对应的。接下来我们需要“解压”该对象，需要用到的函数是nn.utils.rnn.pad_packed_sequence()</catbackward></li>
+<li>W：treatment。假设数据集中有N个records，$W_i$是第i条records的treatment。</li>
+<li>X：non-textual covariate。</li>
+<li>T：textual covariate。$T={T_1,T_2,..T_N}$，$T_i$属于第i条记录，$T_i=[t_{i,1},t_{i,2},…,t_{i,N_{t_i}}]$，$t_{i,j}$是第i条记录的第j个单词。</li>
+<li>$Y^w_i$：第i个records的用第w个treatment的潜在结果。</li>
+<li>$Y^F$：观察结果。<br>仍然遵循potential outcome framework和假设（Stable Unit Treatment Value Assumption，Consistency，Ignorability，Positivity），以确保治疗效果可以确定。最后，整个问题的输入输出定义如下：</li>
+<li>input：非文本协变量X，文本协变量T，treatment assignment W和观测结果$Y^F$</li>
+<li>output：ITE（ individual treatment effect），ATE（average treatment effect），ATT（average treatment effect on the treated group）。利用上述假设，他们定义如下：<br>$ITE_i=E[Y^1|X=x_i]-E[Y^0|X=x_i]=Y^1_i-Y^0_i$<br>$ATE=E_U[Y^1-Y^0]=\frac{1}{|U|} \sum_{i \in U}(Y^1_i-Y^0_i)$<br>$ATT=E_{U_1}[Y^1-Y^0]=\frac{1}{|U_1|} \sum_{i \in U_1}(Y^1_i-Y^0_i)$ </li>
 </ul>
-<h2 id="nn-utils-rnn-pad-packed-sequence"><a href="#nn-utils-rnn-pad-packed-sequence" class="headerlink" title="nn.utils.rnn.pad_packed_sequence()"></a>nn.utils.rnn.pad_packed_sequence()</h2><p>函数说明：该函数的参数有两个参数，依次为sequence和batch_first，batch_first和nn.utils.rnn.pack_padded_sequence()一样，而sequence就是我们经过LSTM后得到的PackedSequence，那么对于刚刚的PackedSequence使用上述函数得到的是什么呢？out, length = nn.utils.rnn.pad_packed_sequence(out, batch_first=True)。得到两个返回值，结果是：tensor([[[-0.0024],[-0.0222],[-0.0447]],       [[-0.0219],[-0.0446],[ 0.0000]],        [[-0.0024],[ 0.0000],[ 0.0000]],       [[-0.0630],[ 0.0000], [ 0.0000]]], grad_fn=<transposebackward0>)<br>tensor([3, 2, 1, 1])。可以看到，[0.0000]是填充部分的输出，如果我们只是取最后一维，那么必然是有问题的，我们需要根据实际长度来取“最后一个”。如何取“最后一个”可以很简单的使用for循环结合实际长度来做，此部分不做赘述。</transposebackward0></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在使用LSTM批处理变长序列的时候，分为以下几步：<br>1）按照句子实际长度降序排列句子<br>2）使用nn.utils.rnn.pack_padded_sequence()函数“压缩”句子<br>3）将“压缩”后的对象送给LSTM得到输出<br>4）对输出使用nn.utils.rnn.pad_packed_sequence()函数进行“解压缩”<br>5）根据句子实际长度来获得自己需要的部分</p>
+<h4 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h4><p>作者提出的 conditional treatment-adversarial learning based matching method (CTAM)的框架如下所示：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/causal/On%20the%20Estimation%20of%20Treatment%20Effect%20with%20Text%20Covariates.JPG" alt="pic1"><br>如图所示，CTAM包含3个主要组件：text processing, representation learning, and conditional treatment discriminator。通过text processing组件，将原始文本转换为矢量化的表示形式S，然后将S与非文本协变量X连接，构造统一的特征向量，并将其输入表示神经网络，得到潜在表示Z。学习表征后，将Z和可能的结果Y输入conditional treatment discriminator。通过阻止鉴别器分配正确的处理，representation learning可以过滤掉与nearly instrumental variables相关的信息。最后的匹配过程在表示空间Z中执行。</p>
+<h5 id="Text-Processing-and-Representation-Learning"><a href="#Text-Processing-and-Representation-Learning" class="headerlink" title="Text Processing and Representation Learning"></a>Text Processing and Representation Learning</h5><p>文本的数值表示是将所有词的词向量进行平均（有点粗糙），得到S。然后将S和数值型协变量X拼接成C，利用一个表示神经网络（实际中，由一个带RELU的 feed-forward neural network来实现）来得到latent representation Z，$Z=\Phi_{rep}(C;\Theta_\Phi)$。然而Z包含nearly instrumental variables的信息，接下来说明如何处理这一问题。</p>
+<h5 id="Conditional-Treatment-Discriminator-and-Conditional-Treatment-Adversarial-Learning"><a href="#Conditional-Treatment-Discriminator-and-Conditional-Treatment-Adversarial-Learning" class="headerlink" title="Conditional Treatment Discriminator and Conditional Treatment-Adversarial Learning"></a>Conditional Treatment Discriminator and Conditional Treatment-Adversarial Learning</h5><ul>
+<li>Conditional Treatment Discriminator：输入为Z和potential outcome Y，输出为treatment assignment W。在conditional treatment discriminator的作用下，学习后的潜在表示可以消除treatment assignment的conditional dependency。conditional treatment discriminator是一个 feed-forward neural network，定义为$D(Z,Y; \Theta_D)$，其中$\Theta_D$是其参数。目标是正确的预测treatment assignment。损失函数为交叉熵损失，定义为：$L_D(\Theta_D,\Theta_\Phi,\Theta_\Psi)=E_{(c,w)~(C,W)}[-logD(\Phi_{rep}(c;\Theta_\Phi),\Psi_{pop}(\Phi_{rep}(c);\Theta_\Psi);\Theta_D)]$。我们来解释一下这个损失函数，$\Phi_{rep}(c;\Theta_\Phi)$就是$Z_c$，$\Psi_{pop}(\Phi_{rep}(c);\Theta_\Psi)$是pseudo outcome predictor with $\Theta_\Psi$as its parameters。我们将在下一部分介绍这个。</li>
+<li>Pseudo Outcome Prediction：conditional treatment discriminator需要所有treatment的potential outcomes，表述如下$Y=\Psi_{pop}(\Phi_{rep}(C);\Theta_\Phi)={\Psi_i(\Phi_{rep}(C);\Theta^{(i)}<em>\Phi)}^{n_w}</em>{i=1}$，$\Psi_i$是每种treatment的预测结果。</li>
+<li>Conditional Treatment-Adversarial Learning：conditional treatment-adversarial learning的目标就是过滤掉和nearly instrumental variables相关的信息。由于nearly instrumental variables指的是对treatment assignment比outcomes更有预测性的变量，因此这种过滤策略相当于去除潜在表征和treatment assignment之间的条件依赖性。为此，我们训练了一个对抗学习模型来实现这一目标。判别器D试图最小化损失L来给出正确的treatment，而$\Phi_{rep}$ 和 $\Psi_{pop}$将最大化这个损失来过滤掉这个信息。当 conditional treatment discriminator被成功地欺骗时，nearly instrumental variables相关的信息可以被成功过滤掉。</li>
+</ul>
+<h5 id="Loss-Function-and-Parameter-Training"><a href="#Loss-Function-and-Parameter-Training" class="headerlink" title="Loss Function and Parameter Training"></a>Loss Function and Parameter Training</h5><ul>
+<li>loss function：最终的损失为$L=L_p-\lambda L_D$，其中$L_P(\Theta_\Phi,\Theta_\Psi)$它是group distance和pseudo outcome prediction损失的总和，定义如下：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/causal/On%20the%20Estimation%20of%20Treatment%20Effect%20with%20Text%20Covariates-2.JPG" alt="pic2"><br>The first term in  measures the pairwise distance between the records sharing the observed outcome label under the same treatment, and the second term measures the pairwise distance between the records that have different observed outcomes. Minimizing the difference of two terms makes similar records close to each other, while dissimilar records far from each other in the representation space. The third term is the pseudo outcome prediction loss, and minimizing it allows better potential outcome predictions for conditional treatment discriminator.</li>
+<li>Model Training：<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/causal/On%20the%20Estimation%20of%20Treatment%20Effect%20with%20Text%20Covariates-3.JPG" alt="pic3"></li>
+<li>Nearest Neighbor Matching<br><img src="https://raw.githubusercontent.com/hub5/blog_pic/master/causal/On%20the%20Estimation%20of%20Treatment%20Effect%20with%20Text%20Covariates-4.JPG" alt="pic4"></li>
+</ul>
+<h4 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h4><h5 id="Evaluation-Metrics"><a href="#Evaluation-Metrics" class="headerlink" title="Evaluation Metrics"></a>Evaluation Metrics</h5><p>有以下几个评价标准：</p>
+<ul>
+<li>PEHE： precision in estimation of heterogeneous effect，$PEHE=\sqrt{\frac{1}{n} \sum^n_{i=1}(ITE_i-ITE’_i)^2}$.</li>
+<li>$\epsilon_{ATE}$：error of ATE estimation，$\epsilon_{ATE}=|ATE-ATE’|$</li>
+<li>$\epsilon_{ATT}$：error of ATT estimation，$\epsilon_{ATT}=|ATT-ATT’|$<h5 id="Dataset"><a href="#Dataset" class="headerlink" title="Dataset"></a>Dataset</h5></li>
+<li>News Dataset（Johansson et al.,2016）：The News dataset  studies the effect of viewing devices to the user experience.</li>
+<li>IHDP Dataset（Brooks-Gunn et al., 1992）：This dataset is from the Infant Health and Development Program targeting low-birth-weight, premature infants.</li>
+<li>CFPB Dataset（[Egami et al., 2018）： The CFPB solicits complaints from consumers across a variety of financial products and then addresses those complaints.</li>
+</ul>
 	
 	</div>
 	
@@ -375,12 +395,8 @@
 	<span>
 		<a href="javascript: window.scrollTo(0, 0);">返回顶部</a>
 		
-			<a href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning" rel="prev">
-				&laquo;上一篇
-			</a>
 		
-		
-			<a href="/2019/07/12/hexo-markdown/" title="hexo-markdown使用笔记" rel="next">
+			<a href="/2019/09/28/pytorch自定义损失函数/" title="Pytorch自定义损失函数" rel="next">
 				下一篇&raquo;
 			</a>
 			
@@ -417,30 +433,6 @@
 							<a href="/2019/09/28/pytorch自定义损失函数/" title="Pytorch自定义损失函数">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="Pytorch自定义损失函数"/>
-							</a>
-						</div>
-					</li>											
-			
-			
-					<li>
-						<div class="relate-post-text">
-							<a class="relate-post-title" href="/2020/02/22/causal-On the Estimation of Treatment Effect with Text Covariates/" title="On the Estimation of Treatment Effect with Text Covariates">
-								On the Estimation of Treatment Effect with Text Covariates			
-							</a>
-							<p class="relate-post-date">
-								<i class="fa fa-calendar"></i>
-								二月 22日, 2020				
-							</p>
-							<p class="relate-post-content">
-								On the Estimation of Treatment Effect with Text Covariates本文发表于2019年IJCAI会议。
-IntroductionTreatment effect，是指一个变量（trea...
-							</p>
-						</div>
-
-						<div class="relate-post-cover">
-							<a href="/2020/02/22/causal-On the Estimation of Treatment Effect with Text Covariates/" title="On the Estimation of Treatment Effect with Text Covariates">				
-								
-								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="On the Estimation of Treatment Effect with Text Covariates"/>
 							</a>
 						</div>
 					</li>											
@@ -534,6 +526,29 @@ Hier...
 							<a href="/2019/07/22/jointlearning2/" title="A Hierarchical Framework for Relation Extraction with Reinforcement Learning">				
 								
 								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="A Hierarchical Framework for Relation Extraction with Reinforcement Learning"/>
+							</a>
+						</div>
+					</li>											
+			
+			
+					<li>
+						<div class="relate-post-text">
+							<a class="relate-post-title" href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理">
+								pytorch中LSTM对变长句子的处理			
+							</a>
+							<p class="relate-post-date">
+								<i class="fa fa-calendar"></i>
+								七月 20日, 2019				
+							</p>
+							<p class="relate-post-content">
+								pytorch中LSTM对变长句子的处理在自然语言处理问题中，以最简单的句子分类为例（比如句子级别情感分类），来说明LSTM对变长句子的处理。（看了网上关于这部分的介绍，大抵互相复制，但感觉都没有说清楚具体怎么用，通过实践，个人总结了...
+							</p>
+						</div>
+
+						<div class="relate-post-cover">
+							<a href="/2019/07/20/pytorch0/" title="pytorch中LSTM对变长句子的处理">				
+								
+								<img class="lazy" src="/img/placeholder.jpg" data-src="/img/cart_cover.jpg" alt="pytorch中LSTM对变长句子的处理"/>
 							</a>
 						</div>
 					</li>											
@@ -703,6 +718,17 @@ Hier...
 
 
 <!-- show math formula -->
+
+	<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config(
+			{ 
+				tex2jax: {
+					inlineMath: [['$','$'], ['\\(','\\)']]
+				} 
+			}
+		);
+	</script>
 
 
 
